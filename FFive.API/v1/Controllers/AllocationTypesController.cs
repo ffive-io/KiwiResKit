@@ -1,9 +1,9 @@
 ﻿using FFive.Data.Models;
-using FFive.Data.Repositories;
 using FFive.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -31,9 +31,9 @@ namespace FFive.API.v1.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<PagedList<AllocationType>> Get()
+        public async Task<ActionResult<List<AllocationType>>> Get()
         {
-            var items = _genericService.GetAllAsync();
+            var items = await _genericService.GetAllWithoutPaginationAsync();
 
             if (items != null)
                 return items;

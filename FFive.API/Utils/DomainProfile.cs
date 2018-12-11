@@ -15,6 +15,7 @@ namespace FFive.API.Utils
             CreateMap<Project, ProjectCreate>().ReverseMap();
             CreateMap<Resource, ResourceCreate>().ReverseMap();
             CreateMap<Platform, SimpleCreate>().ReverseMap();
+            CreateMap<ProjectResource, ProjectResourceCreate>().ReverseMap();
             CreateMap<ProjectLocationBillingRole, ProjectLocationBillingRoleCreate>().ReverseMap();
         }
     }

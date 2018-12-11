@@ -5,6 +5,7 @@ using FFive.Data.ViewModels;
 using FFive.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -71,6 +72,36 @@ namespace FFive.API.v1.Controllers
             if (projectDto != null)
                 return projectDto;
 
+            return NotFound();
+        }
+
+        /// <summary>
+        /// Fetch all Projects
+        /// </summary>
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [Route("allprojects")]
+        public async Task<ActionResult<List<SimpleObject>>> GetAllProjects()
+        {
+            var items = await _projectService.GetAllProjects();
+            if (items != null)
+                return items;
+            return NotFound();
+        }
+
+        /// <summary>
+        /// Fetch all Projects
+        /// </summary>
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [Route("{projectId}/billingroles")]
+        public async Task<ActionResult<List<SimpleObject>>> GetAllProjectLocationBillingRoles(Guid projectId)
+        {
+            var items = await _projectService.GetAllBillingRolesByProjectId(projectId);
+            if (items != null)
+                return items;
             return NotFound();
         }
 

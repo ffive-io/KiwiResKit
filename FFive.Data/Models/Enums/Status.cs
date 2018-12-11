@@ -2,6 +2,7 @@
 {
     public enum Status
     {
+        Unknown = 0,
         Active = 1,
         Deleted = 2,
         OnHold = 3,

@@ -16,12 +16,9 @@ class DetailProject extends Component {
     }
 
     handleChange = (e, id) => {
-
-
         let tmpBillingRoleIndex = this.state.billingRoles.findIndex(brole => {
             return brole.billingRoleId == id;
         });
-
 
         let tmpBillingRole = this.state.billingRoles.find(brole => {
             return brole.billingRoleId == id;
@@ -39,9 +36,7 @@ class DetailProject extends Component {
             ...this.state.billingRoles.slice(tmpBillingRoleIndex + 1),
         ];
         this.setState({ billingRoles: updatedBillingRoles });
-
     }
-
 
     saveBillingRoles = (e) => {
         let tmpProjLocBillRoles = this.state.billingRoles.filter(item => {
@@ -123,12 +118,9 @@ class DetailProject extends Component {
                                 dispatch(alertActions.clear());
                             }, 3000);
                         });
-
             }, error => {
                 console.log('errr');
             });
-
-
     }
 
     onAddClientContact = clientContact => {
@@ -218,7 +210,7 @@ class DetailProject extends Component {
                         <p>{this.state.resources.length + ' resource(s) allocated'}</p>
                     </MDBCol>
                     <MDBCol sm="3">
-                        <MDBBtn onClick={() => { this.addProject() }} color="primary" size="sm">
+                        <MDBBtn onClick={() => this.toggle(15)} color="primary" size="sm">
                             <MDBIcon icon="new" /> Assign Resource
                         </MDBBtn>
                     </MDBCol>
@@ -292,6 +284,7 @@ class DetailProject extends Component {
                         <Button color="primary" onClick={(e) => this.saveBillingRoles(e)}>Save changes</Button>
                     </ModalFooter>
                 </Modal>
+
             </MDBContainer>
         );
     }

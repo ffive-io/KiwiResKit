@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,12 +20,14 @@ namespace FFive.API.v1.Controllers
     public class ProjectLocationBillingRolesController : Controller
     {
         private readonly IGenericService<ProjectLocationBillingRole, string> _genericService;
+        private readonly IProjectService _projectService;
         private readonly IMapper _mapper;
 
-        public ProjectLocationBillingRolesController(IGenericService<ProjectLocationBillingRole, string> genericService, IMapper mapper)
+        public ProjectLocationBillingRolesController(IGenericService<ProjectLocationBillingRole, string> genericService, IMapper mapper, IProjectService projectService)
         {
             _genericService = genericService;
             _mapper = mapper;
+            _projectService = projectService;
         }
 
         /// <summary>
@@ -67,28 +70,32 @@ namespace FFive.API.v1.Controllers
         {
             try
             {
-                var existingItems = await _genericService.GetAllWithoutPaginationAsync();
+                var projectId = entity.Select(a => a.ProjectId).FirstOrDefault();
 
-                //Remove all existing
-                foreach (var item in existingItems)
+                if (projectId != null)
                 {
-                    await _genericService.DeleteAsync(item.Id);
-                }
-                //Add new items
-                foreach (var item in entity)
-                {
-                    var plbr = _mapper.Map<ProjectLocationBillingRole>(item);
-                    var itemCount = await _genericService.CreateAsync(plbr);
-                }
+                    var existingItems = await _projectService.GetAllBillingRolesByProjectId(projectId);
 
-                var newItems = await _genericService.GetAllWithoutPaginationAsync();
+                    //Remove all existing
+                    foreach (var item in existingItems)
+                    {
+                        await _genericService.DeleteAsync(item.Id);
+                    }
+                    //Add new items
+                    foreach (var item in entity)
+                    {
+                        var plbr = _mapper.Map<ProjectLocationBillingRole>(item);
+                        var itemCount = await _genericService.CreateAsync(plbr);
+                    }
 
-                if (newItems != null)
-                {
-                    return newItems;
-                    //return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
+                    var newItems = await _genericService.GetAllWithoutPaginationAsync();
+
+                    if (newItems != null)
+                    {
+                        return newItems;
+                        //return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
+                    }
                 }
-
                 return BadRequest();
             }
             catch (Exception ex)

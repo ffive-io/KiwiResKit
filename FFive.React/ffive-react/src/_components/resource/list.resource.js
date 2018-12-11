@@ -1,17 +1,24 @@
 ﻿import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { resourceService } from '../../_services';
+import { resourceService, projectService, allocationTypeService, projectResourceService } from '../../_services';
 import { history } from '../../_helpers';
 import { resourceActions, alertActions } from '../../_actions';
 import SearchBox from './../shared/search-box';
-import { Badge, Table, TableBody, TableHead, MDBBtn, MDBIcon, MDBCol, MDBRow } from "mdbreact";
+import { Badge, Table, TableBody, TableHead, MDBBtn, MDBIcon, MDBCol, MDBRow, Modal, ModalHeader, ModalBody, ModalFooter, Input, Button } from "mdbreact";
+import momentPropTypes from 'react-moment-proptypes';
+import moment from 'moment';
+import 'react-dates/initialize';
+import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
 
 class ListResource extends Component {
     displayName = ListResource.name
 
     constructor(props) {
         super(props);
-        this.state = { resources: [], loading: true, pageNumber: 1, hasNextPage: true };
+        this.state = {
+            billingRoles: [], allocationTypes: [], projects: [], resources: [], loading: true, pageNumber: 1, hasNextPage: true,
+            allocationEndDate: moment(), allocationStartDate: moment(), focusedAsd: false, focusedAed: false
+        };
         this.loadResources(1);
     }
 
@@ -37,9 +44,123 @@ class ListResource extends Component {
                 });
     }
 
+    componentDidMount() {
+        projectService.getAllProjects()
+            .then(res => {
+                this.setState({
+                    projects: [{ id: '', name: 'Please Select' }, ...res]
+                });
+            }, error => {
+                this.setState({
+                    projects: [{ id: '', name: 'Please Select' }]
+                });
+            });
+
+        allocationTypeService.getAll()
+            .then(res => {
+                this.setState({
+                    allocationTypes: [{ id: '', name: 'Please Select' }, ...res]
+                });
+            }, error => {
+                this.setState({
+                    allocationTypes: [{ id: '', name: 'Please Select' }]
+                });
+            });
+    }
+
+    loadBillingRole = (projectId) => {
+        projectService.GetAllBillingRolesByProjectId(projectId)
+            .then(res => {
+                this.setState({
+                    billingRoles: [{ id: '', name: 'Please Select' }, ...res]
+                });
+            }, error => {
+                this.setState({
+                    billingRoles: [{ id: '', name: 'Please Select' }]
+                });
+            });
+    }
+
     addResource() {
         history.push('/resources/add');
     };
+
+    toggle(nr, resourceId, resourceName) {
+        let modalNumber = 'modal' + nr
+        this.setState({
+            [modalNumber]: !this.state[modalNumber],
+            selecteResourceId: resourceId,
+            selecteResourceName: resourceName
+        });
+    }
+
+    assignResource = (e) => {
+        e.preventDefault();
+        e.target.className += ' was-validated';
+
+        const projectId = this.state.projectId;
+        const allocationTypeId = this.state.allocationTypeId;
+        const allocationPercent = this.state.allocationPercent;
+        const projectLocationBillingRoleId = this.state.projectLocationBillingRoleId;
+        const allocationStartDate = this.state.allocationStartDate;
+        const allocationEndDate = this.state.allocationEndDate;
+        const status = 'Active';
+
+        if (projectId && allocationTypeId && allocationPercent && projectLocationBillingRoleId && allocationStartDate && allocationEndDate) {
+        } else {
+            return;
+        }
+
+        const postData = {
+            projectId,
+            resourceId: this.state.selecteResourceId,
+            allocationTypeId,
+            allocationPercent,
+            projectLocationBillingRoleId,
+            allocationStartDate,
+            allocationEndDate,
+            status
+        }
+
+        console.log(postData);
+
+        projectResourceService.add(postData)
+            .then(res => {
+                const { dispatch } = this.props;
+                dispatch(alertActions.success('Resource assigned successfully'));
+
+                setTimeout(function () {
+                    dispatch(alertActions.clear());
+                }, 3000);
+
+                this.toggle(15);
+            },
+                error => {
+                    const { dispatch } = this.props;
+                    dispatch(alertActions.error('Failed'));
+                    setTimeout(function () {
+                        dispatch(alertActions.clear());
+                    }, 3000);
+                }
+            );
+
+    }
+
+    handleChange = (e) => {
+        if (e.target.type == 'checkbox') {
+            this.setState({ [e.target.name]: e.target.checked });
+        } else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
+
+        if (e.target.name == 'projectId') {
+            if (e.target.value) {
+                this.loadBillingRole(e.target.value);
+            } else {
+                this.setState({ billingRoles: [{ id: '', name: 'Please Select' }] });
+            }
+        }
+    }
 
     //OK
     editResource(id) {
@@ -129,7 +250,9 @@ class ListResource extends Component {
                                     </Table>
                                 </td>
                                 <td>
-                                    Action
+                                    <MDBBtn onClick={() => this.toggle(15, resource.resourceId, resource.name)} color="primary" size="sm">
+                                        Assign
+                                    </MDBBtn>
                                 </td>
                             </tr>
                         )}
@@ -139,6 +262,94 @@ class ListResource extends Component {
                     this.state.hasNextPage &&
                     <button className="load-more-button" onClick={() => { this.loadResources(this.state.pageNumber + 1) }} > load more</button>
                 }
+
+                <Modal isOpen={this.state.modal15} toggle={() => this.toggle(15)} centered size="lg">
+                    <ModalHeader toggle={() => this.toggle(15)}>Assign Resource - {this.state.selecteResourceName}</ModalHeader>
+                    <ModalBody>
+                        <form id="assignResourceForm" className='needs-validation' onSubmit={this.assignResource} noValidate>
+
+                            <MDBRow>
+                                <MDBCol md="6">
+                                    <label htmlFor="projectId" className="form-control-sm">Project:</label>
+                                    <select className="form-control form-control-sm"
+                                        onChange={this.handleChange}
+                                        name="projectId" id="projectId" required>
+                                        {this.state.projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}
+                                    </select>
+                                    <div className="invalid-feedback">Please select a project.</div>
+                                    <div className="valid-feedback">Looks good!</div>
+                                </MDBCol>
+                                <MDBCol md="6">
+                                    <label htmlFor="allocationTypeId" className="form-control-sm">Billing Type:</label>
+                                    <select className="form-control form-control-sm"
+                                        onChange={this.handleChange}
+                                        name="allocationTypeId" id="allocationTypeId" required>
+                                        {this.state.allocationTypes.map((allocationType) => <option key={allocationType.id} value={allocationType.id}>{allocationType.name}</option>)}
+                                    </select>
+                                    <div className="invalid-feedback">Please select billing type.</div>
+                                    <div className="valid-feedback">Looks good!</div>
+
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol md="6">
+                                    <label htmlFor="allocationPercent" className="form-control-sm">Allocation Percent:</label>
+                                    <input onChange={this.handleChange} type="number" min="25" max="100" name="allocationPercent" id="allocationPercent" className="form-control form-control-sm" placeholder="Allocation Percentage" required />
+                                    <div className="invalid-feedback">Please provide valid allocation percentage(25-100).</div>
+                                    <div className="valid-feedback">Looks good!</div>
+                                </MDBCol>
+                                <MDBCol md="6">
+                                    <label htmlFor="projectLocationBillingRoleId" className="form-control-sm">Billing Role:</label>
+                                    <select className="form-control form-control-sm"
+                                        onChange={this.handleChange}
+                                        name="projectLocationBillingRoleId" id="projectLocationBillingRoleId" required>
+                                        {this.state.billingRoles.map((billingRole) => <option key={billingRole.id} value={billingRole.id}>{billingRole.name}</option>)}
+                                    </select>
+                                    <div className="invalid-feedback">Please select billing role.</div>
+                                    <div className="valid-feedback">Looks good!</div>
+
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol md="6">
+                                    <label htmlFor="allocationStartDate" className="form-control-sm">Start Date</label>
+                                    <SingleDatePicker id="allocationStartDate"
+                                        placeholder='Select a date'
+                                        showClearDate={true}
+                                        showDefaultInputIcon={true}
+                                        isOutsideRange={() => false}
+                                        small={true}
+                                        date={this.state.allocationStartDate}
+                                        focused={this.state.focusedAsd}
+                                        numberOfMonths={1}
+                                        onDateChange={date => this.setState({ allocationStartDate: date })}
+                                        onFocusChange={({ focused }) => this.setState({ focusedAsd: focused })} />
+                                </MDBCol>
+                                <MDBCol md="6">
+                                    <label htmlFor="allocationEndDate" className="form-control-sm">End Date</label>
+                                    <SingleDatePicker id="allocationEndDate"
+                                        placeholder='Select a date'
+                                        showClearDate={true}
+                                        showDefaultInputIcon={true}
+                                        isOutsideRange={() => false}
+                                        small={true}
+                                        date={this.state.allocationEndDate}
+                                        focused={this.state.focusedAed}
+                                        numberOfMonths={1}
+                                        onDateChange={date => this.setState({ allocationEndDate: date })}
+                                        onFocusChange={({ focused }) => this.setState({ focusedAed: focused })}
+                                    />
+                                </MDBCol>
+                            </MDBRow>
+
+                        </form>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={() => this.toggle(15)}>Close</Button>
+                        <Button form="assignResourceForm" type="submit" color="primary">Save changes</Button>
+                    </ModalFooter>
+                </Modal>
+
             </Fragment >
         );
     }

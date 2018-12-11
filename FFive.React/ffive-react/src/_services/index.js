@@ -11,3 +11,5 @@ export * from './resource.service';
 export * from './skillset.service';
 export * from './location-billingrole.service';
 export * from './project-location-billingrole.service';
+export * from './allocation-type.service';
+export * from './project-resource.service';

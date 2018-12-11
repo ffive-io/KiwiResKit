@@ -1,6 +1,8 @@
 ﻿using FFive.Data.Models;
+using FFive.Data.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -79,6 +81,29 @@ namespace FFive.Data.Repositories
                 query = query.Where(whereExpression);
 
             return new PagedList<Project>(query, pagingParams.PageNumber, pagingParams.PageSize);
+        }
+
+        public async Task<List<SimpleObject>> GetAllProjects()
+        {
+            var projects = await _appDbContext.Projects.Select(a => new SimpleObject
+            {
+                Id = a.Id,
+                Name = a.Name
+            }).ToListAsync();
+            return projects;
+        }
+
+        public async Task<List<SimpleObject>> GetAllBillingRolesByProjectId(Guid projectId)
+        {
+            var billingRoles = await _appDbContext.ProjectLocationBillingRoles
+                .Where(a => a.ProjectId == projectId)
+                .Select(a => new SimpleObject
+                {
+                    Id = a.Id,
+                    Name = a.LocationBillingRole.Location.Name + '-' + a.LocationBillingRole.BillingRole
+                }).ToListAsync();
+
+            return billingRoles;
         }
     }
 }

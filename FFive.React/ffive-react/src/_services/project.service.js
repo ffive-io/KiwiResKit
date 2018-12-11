@@ -3,6 +3,8 @@
 export const projectService = {
     getAll,
     getById,
+    getAllProjects,
+    GetAllBillingRolesByProjectId,
     add,
     update,
     delete: _delete
@@ -14,6 +16,22 @@ function getAll(pageNumber) {
         headers: authHeader()
     };
     return fetch(config.apiUrl + '/api/v1/projects?pageNumber=' + pageNumber, requestOptions).then(handleResponse, handleError);
+}
+
+function getAllProjects() {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(config.apiUrl + '/api/v1/projects/allprojects', requestOptions).then(handleResponse, handleError);
+}
+
+function GetAllBillingRolesByProjectId(projectId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(config.apiUrl + '/api/v1/projects/' + projectId + '/billingroles', requestOptions).then(handleResponse, handleError);
 }
 
 function getById(id) {
@@ -56,7 +74,6 @@ function _delete(id) {
 }
 
 function handleResponse(response) {
-
     return new Promise((resolve, reject) => {
         if (response.ok) {
             // return json if it was returned in the response

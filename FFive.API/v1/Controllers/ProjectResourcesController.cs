@@ -1,5 +1,7 @@
-﻿using FFive.Data.Models;
+﻿using AutoMapper;
+using FFive.Data.Models;
 using FFive.Data.Repositories;
+using FFive.Data.ViewModels;
 using FFive.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +19,12 @@ namespace FFive.API.v1.Controllers
     public class ProjectResourcesController : Controller
     {
         private readonly IGenericService<ProjectResource, string> _genericService;
+        private readonly IMapper _mapper;
 
-        public ProjectResourcesController(IGenericService<ProjectResource, string> genericService)
+        public ProjectResourcesController(IGenericService<ProjectResource, string> genericService, IMapper mapper)
         {
             _genericService = genericService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -60,15 +64,16 @@ namespace FFive.API.v1.Controllers
         [HttpPost]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult<ProjectResource>> Post(ProjectResource entity)
+        public async Task<ActionResult<ProjectResource>> Post(ProjectResourceCreate entity)
         {
             try
             {
-                var itemCount = await _genericService.CreateAsync(entity);
+                var projectResource = _mapper.Map<ProjectResource>(entity);
+                var itemCount = await _genericService.CreateAsync(projectResource);
 
                 if (itemCount > 0)
                 {
-                    return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
+                    return CreatedAtAction(nameof(Get), new { id = projectResource.Id }, projectResource);
                 }
 
                 return BadRequest();
