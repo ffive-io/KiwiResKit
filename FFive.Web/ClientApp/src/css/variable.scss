@@ -1,0 +1,28 @@
+$bg-color: 			      #eeeeee; 	// use for background
+$button-color: 		    #4598db;   // use for button color
+$heading-bg-color: 		#005972;   // use for button color
+$dark-color: 		      #361700;   // for h1 headings
+$link-color: 	        #0B8EBA;
+$aqua-color:          #1EBEC8;
+$white-bg:            #ffffff;
+
+$login-button:        #d4d3d3;
+$nav-bg:              'nav-bg';
+$main-heading:        'main-heading';
+$mtop50:              'mtop50';
+
+// Usage
+a,
+.link {
+  color: $link-color;
+}
+
+a:hover {
+  color: $link-color;
+}
+
+.nav-bg {
+	border: 1px solid #e8e8e8;
+	background-color: $white-bg;
+	height: 75px;
+}

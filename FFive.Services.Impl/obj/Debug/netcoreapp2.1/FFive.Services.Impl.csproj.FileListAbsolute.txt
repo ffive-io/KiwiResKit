@@ -1,0 +1,14 @@
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\bin\Debug\netcoreapp2.1\FFive.Services.Impl.deps.json
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\bin\Debug\netcoreapp2.1\FFive.Services.Impl.dll
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\bin\Debug\netcoreapp2.1\FFive.Services.Impl.pdb
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\bin\Debug\netcoreapp2.1\FFive.Data.dll
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\bin\Debug\netcoreapp2.1\FFive.Services.dll
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\bin\Debug\netcoreapp2.1\FFive.Data.pdb
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\bin\Debug\netcoreapp2.1\FFive.Services.pdb
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\obj\Debug\netcoreapp2.1\FFive.Services.Impl.csprojAssemblyReference.cache
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\obj\Debug\netcoreapp2.1\FFive.Services.Impl.csproj.CoreCompileInputs.cache
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\obj\Debug\netcoreapp2.1\FFive.Services.Impl.AssemblyInfoInputs.cache
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\obj\Debug\netcoreapp2.1\FFive.Services.Impl.AssemblyInfo.cs
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\obj\Debug\netcoreapp2.1\FFive.Services.Impl.csproj.CopyComplete
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\obj\Debug\netcoreapp2.1\FFive.Services.Impl.dll
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Services.Impl\obj\Debug\netcoreapp2.1\FFive.Services.Impl.pdb

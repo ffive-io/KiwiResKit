@@ -1,0 +1,51 @@
+$font-regular: 'open_sansregular';
+$font-light: 'open_sanslight';
+$font-bold: 'open_sansbold';
+$font-semibold: 'open_sanssemibold';
+$font-size12: 'font-size12';
+$font-size16: 'font-size16';
+
+//usage
+@font-face {
+    font-family: 'open_sansregular';
+    src: url('../fonts/opensans-regular-webfont.woff2') format('woff2'),
+            url('../fonts/opensans-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'open_sanslight';
+    src: url('../fonts/opensans-light-webfont.woff2') format('woff2'),
+            url('../fonts/opensans-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'open_sansbold';
+    src: url('../fonts/opensans-bold-webfont.woff2') format('woff2'),
+            url('../fonts/opensans-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'open_sanssemibold';
+    src: url('../fonts/opensans-semibold-webfont.woff2') format('woff2'),
+        url('../fonts/opensans-semibold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.font-size12 {
+	font-size: 12px;
+}
+
+.font-size16 {
+	font-size: 16px;
+}
+
+.inputborder {
+	border: 1px solid #dbdbdb;
+}

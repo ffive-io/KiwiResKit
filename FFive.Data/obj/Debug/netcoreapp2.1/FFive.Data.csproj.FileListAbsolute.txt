@@ -1,0 +1,11 @@
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\bin\Debug\netcoreapp2.1\FFive.Data.deps.json
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\bin\Debug\netcoreapp2.1\FFive.Data.runtimeconfig.json
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\bin\Debug\netcoreapp2.1\FFive.Data.runtimeconfig.dev.json
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\bin\Debug\netcoreapp2.1\FFive.Data.dll
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\bin\Debug\netcoreapp2.1\FFive.Data.pdb
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\obj\Debug\netcoreapp2.1\FFive.Data.csprojAssemblyReference.cache
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\obj\Debug\netcoreapp2.1\FFive.Data.csproj.CoreCompileInputs.cache
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\obj\Debug\netcoreapp2.1\FFive.Data.AssemblyInfoInputs.cache
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\obj\Debug\netcoreapp2.1\FFive.Data.AssemblyInfo.cs
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\obj\Debug\netcoreapp2.1\FFive.Data.dll
+E:\KiwiTech\Projects\AspNetCoreApiEnterprise\FFive.Data\obj\Debug\netcoreapp2.1\FFive.Data.pdb
