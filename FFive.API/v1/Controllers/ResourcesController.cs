@@ -62,6 +62,7 @@ namespace FFive.API.v1.Controllers
                 ResourceOwnerId = null,
                 AllocatedProjects = p.ProjectResources.Select(q => new AllocatedProject
                 {
+                    ProjectResourceId = q.Id,
                     ProjectName = q.Project.Name,
                     ProjectId = q.ProjectId,
                     AllocationType = q.AllocationType.Name,

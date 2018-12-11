@@ -28,6 +28,7 @@ namespace FFive.Data.IOC
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IProjectResourceRepository, ProjectResourceRepository>();
 
             return services;
         }

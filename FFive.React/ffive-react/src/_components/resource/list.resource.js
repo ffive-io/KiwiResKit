@@ -102,8 +102,8 @@ class ListResource extends Component {
         const allocationTypeId = this.state.allocationTypeId;
         const allocationPercent = this.state.allocationPercent;
         const projectLocationBillingRoleId = this.state.projectLocationBillingRoleId;
-        const allocationStartDate = this.state.allocationStartDate;
-        const allocationEndDate = this.state.allocationEndDate;
+        const allocationStartDate = this.state.allocationStartDate.startOf('day').format('YYYY-MM-DD');
+        const allocationEndDate = this.state.allocationEndDate.startOf('day').format('YYYY-MM-DD');
         const status = 'Active';
 
         if (projectId && allocationTypeId && allocationPercent && projectLocationBillingRoleId && allocationStartDate && allocationEndDate) {
@@ -143,7 +143,6 @@ class ListResource extends Component {
                     }, 3000);
                 }
             );
-
     }
 
     handleChange = (e) => {
@@ -238,11 +237,11 @@ class ListResource extends Component {
                                     <Table borderless responsiveLg small>
                                         <TableBody>
                                             {resource.allocatedProjects && resource.allocatedProjects.map(project =>
-                                                <tr key={project.projectId}>
+                                                <tr key={project.projectResourceId}>
                                                     <td><a href={'/projects/' + project.projectId}>{project.projectName}</a></td>
                                                     <td>{project.allocationPercentage}</td>
-                                                    <td>{project.startDate}</td>
-                                                    <td>{project.endDate}</td>
+                                                    <td>{new moment(project.startDate).format('YYYY-MM-DD')}</td>
+                                                    <td>{new moment(project.endDate).format('YYYY-MM-DD')}</td>
                                                     <td>{project.allocationType}</td>
                                                 </tr>
                                             )}

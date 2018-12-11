@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FFive.Data.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FFive.Services.Impl.IOC
 {
@@ -11,6 +12,7 @@ namespace FFive.Services.Impl.IOC
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped(typeof(IGenericService<,>), typeof(GenericService<,>));
+            services.AddScoped<IGenericService<ProjectResource, string>, ProjectResourceService>();
             return services;
         }
     }

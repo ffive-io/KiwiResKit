@@ -20,6 +20,7 @@ namespace FFive.Data.ViewModels
 
     public class AllocatedProject
     {
+        public Guid ProjectResourceId { get; set; }
         public Guid ProjectId { get; set; }
         public string ProjectName { get; set; }
         public int AllocationPercentage { get; set; }
