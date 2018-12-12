@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { projectService } from '../../_services';
 import { history } from '../../_helpers';
+import moment from 'moment';
 import { clientActions, alertActions } from '../../_actions';
 import SearchBox from './../shared/search-box';
 import { Badge, Table, TableBody, TableHead, MDBBtn, MDBIcon, MDBCol, MDBRow } from "mdbreact";
@@ -110,8 +111,8 @@ class ListProject extends Component {
 
                                 <td>{project.projectType}</td>
                                 <td>{project.platform}</td>
-                                <td>{project.startDate}</td>
-                                <td>{project.endDate}</td>
+                                <td>{new moment(project.startDate).format('YYYY-MM-DD')}</td>
+                                <td>{new moment(project.endDate).format('YYYY-MM-DD')}</td>
                                 <td>{project.operationHead}</td>
                                 <td>{project.projectHead}</td>
                                 <td>{project.projectStatus}</td>

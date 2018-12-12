@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { projectService, locationBillingRoleService, projectLocationBillingRoleService } from '../../_services';
 import { history } from '../../_helpers';
+import moment from 'moment';
 import { alertActions } from '../../_actions';
 import { Input, Badge, MDBIcon, Table, TableBody, TableHead, MDBCol, MDBRow, MDBCard, MDBCardBody, Modal, ModalHeader, ModalBody, ModalFooter, MDBCardHeader, MDBBtn, MDBContainer, Button } from "mdbreact";
 
@@ -166,8 +167,8 @@ class DetailProject extends Component {
                                         <div className="float-right">Status:</div><br />                                    </MDBCol>
                                     <MDBCol sm="6">
                                         <div className="float-left">
-                                            {this.state.project.startDate}<br />
-                                            {this.state.project.endDate}<br />
+                                            {new moment(this.state.project.startDate).format('YYYY-MM-DD')}<br />
+                                            {new moment(this.state.project.endDate).format('YYYY-MM-DD')}<br />
                                             {this.state.project.projectStatus}</div>                                    </MDBCol>
                                 </MDBRow>
                             </MDBCol>
@@ -240,8 +241,8 @@ class DetailProject extends Component {
                                         <td>{resource.resourceName}</td>
                                         <td>{resource.designation}</td>
                                         <td>{resource.allocationPercentage}</td>
-                                        <td>{resource.allocationStartDate}</td>
-                                        <td>{resource.allocationEndDate}</td>
+                                        <td>{new moment(resource.allocationStartDate).format('YYYY-MM-DD')}</td>
+                                        <td>{new moment(resource.allocationEndDate).format('YYYY-MM-DD')}</td>
                                         <td>{resource.reportingManager}</td>
                                         <td>{resource.resourceOwner}</td>
                                         <td>action</td>

@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { clientService } from '../../_services';
 import { history } from '../../_helpers';
+import moment from 'moment';
 import { clientActions, alertActions } from '../../_actions';
 import SearchBox from './../shared/search-box';
 import { Badge, Table, TableBody, TableHead, MDBBtn, MDBIcon, MDBCol, MDBRow } from "mdbreact";
@@ -110,7 +111,7 @@ class ListClient extends Component {
                                 <td>{client.ccEmail}</td>
                                 <td>{client.ccContactNumber}</td>
                                 <td>{client.ccTimeZone}</td>
-                                <td>{client.createdDate.toString()}
+                                <td>{new moment(client.createdDate).format('YYYY-MM-DD')}
                                 </td>
                                 <td>{client.salesContact}</td>
                                 <td>

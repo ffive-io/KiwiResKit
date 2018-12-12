@@ -2,6 +2,7 @@
 import { connect } from 'react-redux';
 import { clientService, clientTypeService, userService, locationService, clientContactService } from '../../_services';
 import { history } from '../../_helpers';
+import moment from 'moment';
 import { alertActions } from '../../_actions';
 import { Badge, MDBIcon, Table, TableBody, TableHead, MDBCol, MDBRow, MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardHeader, MDBBtn, MDBContainer } from "mdbreact";
 import AddClientContactModal from './add.client-contact-modal';
@@ -117,7 +118,7 @@ class DetailClient extends Component {
                                         <div className="float-right">No of projects:</div>
                                     </MDBCol>
                                     <MDBCol sm="6">
-                                        <div className="float-left">{this.state.since}<br />
+                                        <div className="float-left">{new moment(this.state.since).format('YYYY-MM-DD')}<br />
                                             {this.state.clientType}<br />
                                             {this.state.salesRep}<br />
                                             {this.state.numberOfProjects}</div>
@@ -216,8 +217,8 @@ class DetailClient extends Component {
                                         <td>{project.platform.name}</td>
                                         <td>{project.projectType.name}</td>
                                         <td>{project.clientContact.firstName + ' ' + project.clientContact.lastName}</td>
-                                        <td>{project.startDate}</td>
-                                        <td>{project.endDate}</td>
+                                        <td>{new moment(project.startDate).format('YYYY-MM-DD')}</td>
+                                        <td>{new moment(project.endDate).format('YYYY-MM-DD')}</td>
                                         <td>{project.status}</td>
                                         <td>action</td>
                                     </tr>
