@@ -34,13 +34,17 @@ function GetAllBillingRolesByProjectId(projectId) {
     return fetch(config.apiUrl + '/api/v1/projects/' + projectId + '/billingroles', requestOptions).then(handleResponse, handleError);
 }
 
-function getById(id) {
+function getById(id, startDate, endDate) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
+    var queryString = '';
+    if (startDate && endDate) {
+        queryString = '?startDate=' + startDate + '&endDate=' + endDate;
+    }
 
-    return fetch(config.apiUrl + '/api/v1/projects/' + id, requestOptions).then(handleResponse, handleError);
+    return fetch(config.apiUrl + '/api/v1/projects/' + id + queryString, requestOptions).then(handleResponse, handleError);
 }
 
 function add(project) {

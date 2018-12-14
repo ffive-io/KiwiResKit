@@ -1,14 +1,13 @@
-﻿import * as jwt_decode from "jwt-decode";
-
-export const jwtParser = {
+﻿export const jwtParser = {
     getDecodedAccessToken
 };
 
 function getDecodedAccessToken(token) {
     try {
-        return jwt_decode(token);
+        return JSON.parse(atob(token.split('.')[1]));        
     }
     catch (Error) {
         return null;
     }
+
 };

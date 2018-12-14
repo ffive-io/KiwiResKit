@@ -29,6 +29,7 @@ namespace FFive.Data.ViewModels
 
     public class ProjectResourceDto
     {
+        public Guid ProjectResourceId { get; set; }
         public Guid resourceId { get; set; }
         public string ProjectRole { get; set; }
         public string BillingType { get; set; }

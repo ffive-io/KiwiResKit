@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FFive.Data;
 using FFive.Data.Models;
 using FFive.Data.Repositories;
 using FFive.Data.ViewModels;
@@ -111,8 +112,21 @@ namespace FFive.API.v1.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProjectDto>> Get(Guid id)
+        public async Task<ActionResult<ProjectDto>> Get(Guid id, DateTime? startDate, DateTime? endDate)
         {
+            DateTime date = DateTime.UtcNow.ConvertToIST();
+            DateTime firstDayOfMonth = DateTime.UtcNow.ConvertToIST(), lastDayOfMonth = DateTime.UtcNow.ConvertToIST();
+            if (startDate == null || endDate == null)
+            {
+                firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
+                lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            }
+            else
+            {
+                firstDayOfMonth = (startDate ?? DateTime.UtcNow).ConvertToIST();
+                lastDayOfMonth = (endDate ?? DateTime.UtcNow).ConvertToIST();
+            }
+
             var item = await _projectService.GetByIdAsync(id);
             if (item == null)
                 return NotFound();
@@ -132,6 +146,7 @@ namespace FFive.API.v1.Controllers
                     ProjectHead = item.ProjectHead == null ? null : item.ProjectHead.FirstName + ' ' + item.ProjectHead.LastName,
                     ProjectResources = item.ProjectResources?.Select(a => new ProjectResourceDto
                     {
+                        ProjectResourceId = a.Id,
                         resourceId = a.ResourceId,
                         ProjectRole = a.ProjectLocationBillingRole.LocationBillingRole.BillingRole,
                         BillingType = a.AllocationType.Name,
@@ -142,7 +157,7 @@ namespace FFive.API.v1.Controllers
                         AllocationEndDate = a.AllocationEndDate,
                         ReportingManager = a.Resource.Manager == null ? null : a.Resource.Manager.FirstName + ' ' + a.Resource.Manager.LastName,
                         ResourceOwner = a.Resource.ResourceOwner == null ? null : a.Resource.ResourceOwner.FirstName + ' ' + a.Resource.ResourceOwner.LastName,
-                    }).ToList(),
+                    }).Where(a => firstDayOfMonth < a.AllocationEndDate && lastDayOfMonth > a.AllocationStartDate).ToList(),
                     ProjectLocationBillingRoles = item.ProjectLocationBillingRoles?.Select(a => new ProjectLocationBillingRoleCreate
                     {
                         LocationBillingRoleId = a.LocationBillingRoleId,

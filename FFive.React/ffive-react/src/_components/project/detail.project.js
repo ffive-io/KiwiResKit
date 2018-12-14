@@ -2,17 +2,24 @@
 import { connect } from 'react-redux';
 import { projectService, locationBillingRoleService, projectLocationBillingRoleService } from '../../_services';
 import { history } from '../../_helpers';
+import momentPropTypes from 'react-moment-proptypes';
 import moment from 'moment';
 import { alertActions } from '../../_actions';
-import { Input, Badge, MDBIcon, Table, TableBody, TableHead, MDBCol, MDBRow, MDBCard, MDBCardBody, Modal, ModalHeader, ModalBody, ModalFooter, MDBCardHeader, MDBBtn, MDBContainer, Button } from "mdbreact";
+import { Fa, Input, Badge, MDBIcon, Table, TableBody, TableHead, MDBCol, MDBRow, MDBCard, MDBCardBody, Modal, ModalHeader, ModalBody, ModalFooter, MDBCardHeader, MDBBtn, MDBContainer, Button } from "mdbreact";
+import { SingleDatePicker } from 'react-dates';
 
 class DetailProject extends Component {
     displayName = DetailProject.name
 
     constructor(props) {
         super(props);
+        console.log('hh', moment().startOf('month').format('YYYY-MM-DD'));
+
         this.state = {
-            project: {}, resources: [], modal14: false, billingRoles: []
+            project: {}, resources: [], modal14: false, billingRoles: [],
+            startDate: moment().startOf('month'),
+            endDate: moment().endOf('month'),
+            focusedSd: false, focusedEd: false,
         };
     }
 
@@ -75,6 +82,20 @@ class DetailProject extends Component {
         this.setState({
             [modalNumber]: !this.state[modalNumber]
         });
+    }
+
+    loadProjectWithDate = (startDate, endDate) => {
+        const { id: projectId } = this.props.match.params;
+        projectService.getById(projectId, startDate, endDate)
+            .then(res => {
+                this.setState({
+                    projectId,
+                    project: res,
+                    resources: res.projectResources
+                });
+            }, error => {
+                console.log('errr');
+            });
     }
 
     componentDidMount() {
@@ -189,7 +210,7 @@ class DetailProject extends Component {
                         </MDBRow>
                         <MDBRow between>
                             <MDBCol sm="3">
-                                <MDBBtn color="primary" size="sm">Edit</MDBBtn>
+                                <MDBBtn color="primary" onClick={() => { this.loadProjectWithDate('2018-11-01', '2018-11-30') }} size="sm">Edit</MDBBtn>
                             </MDBCol>
                             <MDBCol sm="3">
                                 <MDBBtn onClick={() => this.toggle(14)} color="primary" size="sm">
@@ -206,12 +227,46 @@ class DetailProject extends Component {
                         <hr />
                     </MDBCol>
                 </MDBRow>
-                <MDBRow between>
-                    <MDBCol sm="3">
+                <MDBRow>
+                    <MDBCol sm="4">
                         <p>{this.state.resources.length + ' resource(s) allocated'}</p>
                     </MDBCol>
-                    <MDBCol sm="3">
-                        <MDBBtn onClick={() => this.toggle(15)} color="primary" size="sm">
+
+                    <MDBCol sm="6">
+                        <SingleDatePicker id="startDate"
+                            placeholder='Start date'
+                            showClearDate={true}
+                            showDefaultInputIcon={true}
+                            isOutsideRange={() => false}
+                            small={true}
+                            date={this.state.startDate}
+                            focused={this.state.focusedSd}
+                            numberOfMonths={1}
+                            onDateChange={date => this.setState({ startDate: date })}
+                            onFocusChange={({ focused }) => this.setState({ focusedSd: focused })}
+                        />
+                        <SingleDatePicker id="endDate"
+                            placeholder='End date'
+                            showClearDate={true}
+                            showDefaultInputIcon={true}
+                            isOutsideRange={() => false}
+                            small={true}
+                            date={this.state.endDate}
+                            focused={this.state.focusedEd}
+                            numberOfMonths={1}
+                            onDateChange={date => this.setState({ endDate: date })}
+                            onFocusChange={({ focused }) => this.setState({ focusedEd: focused })}
+                        />
+                        <MDBBtn onClick={() => { this.loadProjectWithDate(this.state.startDate.format('YYYY-MM-DD'), this.state.endDate.format('YYYY-MM-DD')) }} color="primary" size="sm">
+                            <Fa icon="search" />
+                        </MDBBtn>
+
+                    </MDBCol>
+
+                    
+                   
+                    <MDBCol sm="2">
+                        <MDBBtn onClick={() => { history.push('/resources'); }} color="primary" size="sm">
                             <MDBIcon icon="new" /> Assign Resource
                         </MDBBtn>
                     </MDBCol>
@@ -235,7 +290,7 @@ class DetailProject extends Component {
                             </TableHead>
                             <TableBody>
                                 {this.state.resources.map(resource =>
-                                    <tr key={resource.resourceId}>
+                                    <tr key={resource.projectResourceId}>
                                         <td>{resource.projectRole}</td>
                                         <td>{resource.billingType}</td>
                                         <td>{resource.resourceName}</td>
