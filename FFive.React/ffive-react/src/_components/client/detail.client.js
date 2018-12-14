@@ -44,6 +44,7 @@ class DetailClient extends Component {
                     salesRep: res.salesContact.firstName + ' ' + res.salesContact.lastName,
                     clientContacts: res.clientContacts,
                     projects: res.projects,
+                    numberOfProjects: res.projects.length,
                     clientId: res.id
                 });
             }, error => {
@@ -213,7 +214,7 @@ class DetailClient extends Component {
                             <TableBody>
                                 {this.state.projects.map(project =>
                                     <tr key={project.id}>
-                                        <td>{project.name}</td>
+                                        <td><a href={'/projects/' + project.id}>{project.name}</a></td>
                                         <td>{project.platform.name}</td>
                                         <td>{project.projectType.name}</td>
                                         <td>{project.clientContact.firstName + ' ' + project.clientContact.lastName}</td>

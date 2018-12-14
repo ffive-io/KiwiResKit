@@ -243,6 +243,7 @@ class ListResource extends Component {
                                                     <td>{new moment(project.startDate).format('YYYY-MM-DD')}</td>
                                                     <td>{new moment(project.endDate).format('YYYY-MM-DD')}</td>
                                                     <td>{project.allocationType}</td>
+                                                    <td><img onClick={() => { alert('tet'); }} src="/images/edit-icon.svg" /></td>
                                                 </tr>
                                             )}
                                         </TableBody>
