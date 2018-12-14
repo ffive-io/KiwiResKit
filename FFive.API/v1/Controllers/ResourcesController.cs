@@ -68,7 +68,9 @@ namespace FFive.API.v1.Controllers
                     AllocationType = q.AllocationType.Name,
                     AllocationPercentage = q.AllocationPercent,
                     EndDate = q.AllocationEndDate,
-                    StartDate = q.AllocationStartDate
+                    StartDate = q.AllocationStartDate,
+                    AllocationTypeId = q.AllocationTypeId,
+                    ProjectLocationBillingRoleId = q.ProjectLocationBillingRoleId
                 }).ToList()
             }).ToList();
 

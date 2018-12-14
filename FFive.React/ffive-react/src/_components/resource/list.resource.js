@@ -15,9 +15,10 @@ class ListResource extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             billingRoles: [], allocationTypes: [], projects: [], resources: [], loading: true, pageNumber: 1, hasNextPage: true,
-            allocationEndDate: moment(), allocationStartDate: moment(), focusedAsd: false, focusedAed: false
+            allocationEndDate: moment().add(1, 'months'), allocationStartDate: moment(), focusedAsd: false, focusedAed: false, projectId: '', projectSelectionDisabled: false
         };
         this.loadResources(1);
     }
@@ -68,16 +69,19 @@ class ListResource extends Component {
             });
     }
 
-    loadBillingRole = (projectId) => {
+    loadBillingRole = (projectId, callback) => {
         projectService.GetAllBillingRolesByProjectId(projectId)
             .then(res => {
                 this.setState({
                     billingRoles: [{ id: '', name: 'Please Select' }, ...res]
                 });
+                console.log('billing role loaded');
+                callback();
             }, error => {
                 this.setState({
                     billingRoles: [{ id: '', name: 'Please Select' }]
                 });
+                callback();
             });
     }
 
@@ -86,12 +90,61 @@ class ListResource extends Component {
     };
 
     toggle(nr, resourceId, resourceName) {
-        let modalNumber = 'modal' + nr
+        const { id: projectId } = this.props.match.params;
+        if (projectId) {
+            this.setState({
+                projectId,
+                projectSelectionDisabled: true
+                
+            });
+            this.loadBillingRole(projectId, () => { });
+        } else {
+            this.setState({
+                projectId: '',
+                projectSelectionDisabled: false
+            });
+        }
+
+        let modalNumber = 'modal' + nr;
         this.setState({
             [modalNumber]: !this.state[modalNumber],
             selecteResourceId: resourceId,
-            selecteResourceName: resourceName
+            selecteResourceName: resourceName,
+            projectLocationBillingRoleDisabled: false,
+            allocationTypeSelectionDisabled: false,
+            projectLocationBillingRoleId: '',
+            allocationTypeId: '',
+            projectResourceId: '',
+            allocationPercentage: '',
+            allocationStartDate: moment(),
+            allocationEndDate: moment().add(1, 'months')
         });
+    }
+
+    editAllocation = (nr, resourceId, resourceName, projectId, projectResourceId, projectLocationBillingRoleId, allocationTypeId, allocationPercentage, allocationStartDate, allocationEndDate) => {
+        this.loadBillingRole(projectId, () => {
+
+            let modalNumber = 'modal' + nr
+            this.setState({
+                [modalNumber]: !this.state[modalNumber],
+                selecteResourceId: resourceId,
+                selecteResourceName: resourceName,
+                projectSelectionDisabled: true,
+                projectId,
+                projectLocationBillingRoleDisabled: true,
+                allocationTypeSelectionDisabled: true,
+                projectLocationBillingRoleId,
+                allocationTypeId,
+                projectResourceId,
+                allocationPercentage,
+                allocationStartDate,
+                allocationEndDate
+            });
+            console.log('billing role loaded and state set');
+
+        });
+
+
     }
 
     assignResource = (e) => {
@@ -121,8 +174,6 @@ class ListResource extends Component {
             allocationEndDate,
             status
         }
-
-        console.log(postData);
 
         projectResourceService.add(postData)
             .then(res => {
@@ -154,7 +205,7 @@ class ListResource extends Component {
 
         if (e.target.name == 'projectId') {
             if (e.target.value) {
-                this.loadBillingRole(e.target.value);
+                this.loadBillingRole(e.target.value, () => { });
             } else {
                 this.setState({ billingRoles: [{ id: '', name: 'Please Select' }] });
             }
@@ -243,7 +294,7 @@ class ListResource extends Component {
                                                     <td>{new moment(project.startDate).format('YYYY-MM-DD')}</td>
                                                     <td>{new moment(project.endDate).format('YYYY-MM-DD')}</td>
                                                     <td>{project.allocationType}</td>
-                                                    <td><img onClick={() => { alert('tet'); }} src="/images/edit-icon.svg" /></td>
+                                                    <td><img onClick={() => { this.editAllocation(15, resource.resourceId, resource.name, project.projectId, project.projectResourceId, project.projectLocationBillingRoleId, project.allocationTypeId, project.allocationPercentage, new moment(project.startDate), new moment(project.endDate)) }} src="/images/edit-icon.svg" /></td>
                                                 </tr>
                                             )}
                                         </TableBody>
@@ -273,6 +324,8 @@ class ListResource extends Component {
                                     <label htmlFor="projectId" className="form-control-sm">Project:</label>
                                     <select className="form-control form-control-sm"
                                         onChange={this.handleChange}
+                                        disabled={this.state.projectSelectionDisabled}
+                                        value={this.state.projectId}
                                         name="projectId" id="projectId" required>
                                         {this.state.projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}
                                     </select>
@@ -283,6 +336,8 @@ class ListResource extends Component {
                                     <label htmlFor="allocationTypeId" className="form-control-sm">Billing Type:</label>
                                     <select className="form-control form-control-sm"
                                         onChange={this.handleChange}
+                                        disabled={this.state.allocationTypeSelectionDisabled}
+                                        value={this.state.allocationTypeId}
                                         name="allocationTypeId" id="allocationTypeId" required>
                                         {this.state.allocationTypes.map((allocationType) => <option key={allocationType.id} value={allocationType.id}>{allocationType.name}</option>)}
                                     </select>
@@ -294,7 +349,9 @@ class ListResource extends Component {
                             <MDBRow>
                                 <MDBCol md="6">
                                     <label htmlFor="allocationPercent" className="form-control-sm">Allocation Percent:</label>
-                                    <input onChange={this.handleChange} type="number" min="25" max="100" name="allocationPercent" id="allocationPercent" className="form-control form-control-sm" placeholder="Allocation Percentage" required />
+                                    <input onChange={this.handleChange} type="number" min="25" max="100" name="allocationPercent" id="allocationPercent"
+                                        defaultValue={this.state.allocationPercentage}
+                                        className="form-control form-control-sm" placeholder="Allocation Percentage" required />
                                     <div className="invalid-feedback">Please provide valid allocation percentage(25-100).</div>
                                     <div className="valid-feedback">Looks good!</div>
                                 </MDBCol>
@@ -302,6 +359,8 @@ class ListResource extends Component {
                                     <label htmlFor="projectLocationBillingRoleId" className="form-control-sm">Billing Role:</label>
                                     <select className="form-control form-control-sm"
                                         onChange={this.handleChange}
+                                        disabled={this.state.projectLocationBillingRoleDisabled}
+                                        value={this.state.projectLocationBillingRoleId}
                                         name="projectLocationBillingRoleId" id="projectLocationBillingRoleId" required>
                                         {this.state.billingRoles.map((billingRole) => <option key={billingRole.id} value={billingRole.id}>{billingRole.name}</option>)}
                                     </select>

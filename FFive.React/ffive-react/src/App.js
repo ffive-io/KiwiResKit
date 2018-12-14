@@ -40,6 +40,7 @@ class App extends Component {
                     <PrivateRoute exact path='/projects/add' component={AddProject} />
                     <PrivateRoute exact path='/projects' component={ListProject} />
                     <PrivateRoute exact path='/projects/:id' component={DetailProject} />
+                    <PrivateRoute exact path='/projects/:id/allocate' component={ListResource} />
 
                     <PrivateRoute path='/clients/add' component={AddClient} />
                     <PrivateRoute exact path='/clients' component={ListClient} />

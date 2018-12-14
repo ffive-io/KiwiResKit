@@ -27,5 +27,7 @@ namespace FFive.Data.ViewModels
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string AllocationType { get; set; }
+        public Guid AllocationTypeId { get; set; }
+        public Guid ProjectLocationBillingRoleId { get; set; }
     }
 }

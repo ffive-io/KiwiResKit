@@ -35,8 +35,6 @@ class DetailClient extends Component {
         const { id: clientId } = this.props.match.params;
         clientService.getById(clientId)
             .then(res => {
-                console.log(res.projects);
-
                 this.setState({
                     clientName: res.name, streetAddress: res.streetAddress, city: res.city, state: res.state,
                     country: res.location.name, zip: res.zipCode, locationId: res.location.id,

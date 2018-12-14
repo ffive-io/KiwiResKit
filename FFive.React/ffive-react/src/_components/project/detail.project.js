@@ -13,8 +13,6 @@ class DetailProject extends Component {
 
     constructor(props) {
         super(props);
-        console.log('hh', moment().startOf('month').format('YYYY-MM-DD'));
-
         this.state = {
             project: {}, resources: [], modal14: false, billingRoles: [],
             startDate: moment().startOf('month'),
@@ -266,7 +264,7 @@ class DetailProject extends Component {
                     
                    
                     <MDBCol sm="2">
-                        <MDBBtn onClick={() => { history.push('/resources'); }} color="primary" size="sm">
+                        <MDBBtn onClick={() => { history.push('/projects/' + this.state.projectId + '/allocate'); }} color="primary" size="sm">
                             <MDBIcon icon="new" /> Assign Resource
                         </MDBBtn>
                     </MDBCol>
