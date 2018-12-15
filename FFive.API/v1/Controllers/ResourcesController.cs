@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using FFive.Data.Models;
+using FFive.Data.Models.Auth;
 using FFive.Data.Repositories;
 using FFive.Data.ViewModels;
 using FFive.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,11 +24,13 @@ namespace FFive.API.v1.Controllers
     {
         private readonly IResourceService _resourceService;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ResourcesController(IResourceService resourceService, IMapper mapper)
+        public ResourcesController(IResourceService resourceService, IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _resourceService = resourceService;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -45,6 +49,62 @@ namespace FFive.API.v1.Controllers
             Expression<Func<Resource, string>> orderBy = (c) => c.Id.ToString();
 
             var resources = _resourceService.GetAllAsync(new PagingParams { PageNumber = page }, where, orderBy);
+
+            if (resources == null)
+                return NotFound();
+
+            var finalResources = resources.Data.Select(p => new ResourceDto
+            {
+                ResourceId = p.Id,
+                EmpCode = p.EmpCode,
+                Name = p.FirstName + ' ' + p.LastName,
+                Designation = p.Designation,
+                Skill = p.Skillset.Name,
+                ReportingManagerId = p.Manager == null ? null : p.ManagerId,
+                ReportingManager = p.Manager == null ? null : (p.Manager.FirstName + ' ' + p.Manager.LastName),
+                ResourceOwner = p.ResourceOwner == null ? null : (p.ResourceOwner.FirstName + ' ' + p.ResourceOwner.LastName),
+                ResourceOwnerId = null,
+                AllocatedProjects = p.ProjectResources.Select(q => new AllocatedProject
+                {
+                    ProjectResourceId = q.Id,
+                    ProjectName = q.Project.Name,
+                    ProjectId = q.ProjectId,
+                    AllocationType = q.AllocationType.Name,
+                    AllocationPercentage = q.AllocationPercent,
+                    EndDate = q.AllocationEndDate,
+                    StartDate = q.AllocationStartDate,
+                    AllocationTypeId = q.AllocationTypeId,
+                    ProjectLocationBillingRoleId = q.ProjectLocationBillingRoleId
+                }).ToList()
+            }).ToList();
+
+            PagedList<ResourceDto> resourceDto = new PagedList<ResourceDto>(finalResources, resources.TotalItems, resources.PageNumber, resources.PageSize);
+
+            if (resourceDto != null)
+                return resourceDto;
+
+            return NotFound();
+        }
+
+        /// <summary>
+        /// Fetch all resources
+        /// </summary>
+        [Authorize(Roles = "admin, cxo, opshead, projecthead, presales, user")]
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [Route("bymanager")]
+        public ActionResult<PagedList<ResourceDto>> GetMyResources([FromQuery]int page = 1, string name = null)
+        {
+            Expression<Func<Resource, bool>> where = null;
+            if (name != null)
+                where = (c) => c.FirstName.Contains(name) || c.LastName.Contains(name);
+
+            Expression<Func<Resource, string>> orderBy = (c) => c.Id.ToString();
+
+            var user = _userManager.GetUserAsync(HttpContext.User).Result;
+
+            var resources = _resourceService.GetMyResources(user.ResourceId, new PagingParams { PageNumber = page }, where, orderBy);
 
             if (resources == null)
                 return NotFound();
@@ -152,7 +212,7 @@ namespace FFive.API.v1.Controllers
         }
 
         /// <summary>
-        /// Fetch a new resource
+        /// Fetch a resource
         /// </summary>
         [Authorize(Roles = "admin, cxo, opshead, projecthead, presales, user")]
         [ProducesResponseType(200)]
@@ -194,37 +254,6 @@ namespace FFive.API.v1.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        /*
-
-        /// <summary>
-        /// Creates a new resource
-        /// </summary>
-        [Authorize(Roles = "admin, cxo, opshead, projecthead")]
-        [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
-        [Route("createwithuseraccount")]
-        public async Task<ActionResult<Resource>> CreateWithUserAccount(ResourceCreateUser resource)
-        {
-            try
-            {
-                var entity = _mapper.Map<Resource>(resource);
-                var itemCount = await _resourceService.CreateWithUserAccountAsync(entity, resource.RoleId.ToString(), resource.Password);
-
-                if (itemCount > 0)
-                {
-                    return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
-                }
-
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        */
 
         /// <summary>
         /// Updates a resource

@@ -4,7 +4,7 @@ import { resourceService, projectService, allocationTypeService, projectResource
 import { history } from '../../_helpers';
 import { resourceActions, alertActions } from '../../_actions';
 import SearchBox from './../shared/search-box';
-import { Badge, Table, TableBody, TableHead, MDBBtn, MDBIcon, MDBCol, MDBRow, Modal, ModalHeader, ModalBody, ModalFooter, Input, Button } from "mdbreact";
+import { MDBCard, MDBCardHeader, MDBCardBody, Badge, Table, TableBody, TableHead, MDBBtn, MDBIcon, MDBCol, MDBRow, Modal, ModalHeader, ModalBody, ModalFooter, Input, Button } from "mdbreact";
 import momentPropTypes from 'react-moment-proptypes';
 import moment from 'moment';
 import 'react-dates/initialize';
@@ -17,23 +17,32 @@ class ListResource extends Component {
         super(props);
 
         this.state = {
-            billingRoles: [], allocationTypes: [], projects: [], resources: [], loading: true, pageNumber: 1, hasNextPage: true,
-            allocationEndDate: moment().add(1, 'months'), allocationStartDate: moment(), focusedAsd: false, focusedAed: false, projectId: '', projectSelectionDisabled: false
+            billingRoles: [], allocationTypes: [], projects: [], resources: [], loading: true, pageNumber: 1, hasNextPage: true, noOfResources: 0,
+            allocationEndDate: moment().add(1, 'months'), allocationStartDate: moment(), focusedAsd: false, focusedAed: false, projectId: '', projectSelectionDisabled: false,
+            tabSelected: 'My'
         };
-        this.loadResources(1);
+        this.loadMyResources(1);
     }
 
-    loadResources(pageNumber) {
-        console.log('page', pageNumber);
-        resourceService.getAll(pageNumber)
+    toggleTab = (tab) => {
+        if (tab === 'My') {
+            this.setState({ tabSelected: 'My', resources: [] })
+            this.loadMyResources(1);
+        } else {
+            this.setState({ tabSelected: 'All', resources: [] });
+            this.loadResources(1);
+        }
+    }
+
+    loadMyResources(pageNumber) {
+        resourceService.getMyResources(pageNumber)
             .then(res => {
-                console.log(res);
                 let resourcesExisting = this.state.resources;
                 const { dispatch } = this.props;
                 if (res.hasNextPage == true) {
-                    this.setState({ hasNextPage: true, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
+                    this.setState({ noOfResources: res.totalItems, hasNextPage: true, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
                 } else {
-                    this.setState({ hasNextPage: false, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
+                    this.setState({ noOfResources: res.totalItems, hasNextPage: false, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
                 }
             },
                 error => {
@@ -43,6 +52,35 @@ class ListResource extends Component {
                         dispatch(alertActions.clear());
                     }, 3000);
                 });
+    }
+
+    loadResources(pageNumber) {
+        resourceService.getAll(pageNumber)
+            .then(res => {
+                let resourcesExisting = this.state.resources;
+                const { dispatch } = this.props;
+                if (res.hasNextPage == true) {
+                    this.setState({ noOfResources: res.totalItems, hasNextPage: true, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
+                } else {
+                    this.setState({ noOfResources: res.totalItems, hasNextPage: false, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
+                }
+            },
+                error => {
+                    const { dispatch } = this.props;
+                    dispatch(alertActions.error('Resource listing failed!'));
+                    setTimeout(function () {
+                        dispatch(alertActions.clear());
+                    }, 3000);
+                });
+    }
+
+    loadMore = (pageNumber) => {
+        if (this.state.tabSelected === 'My') {
+            this.loadMyResources(pageNumber);
+        } else {
+            this.loadResources(pageNumber);
+        }
+
     }
 
     componentDidMount() {
@@ -75,7 +113,6 @@ class ListResource extends Component {
                 this.setState({
                     billingRoles: [{ id: '', name: 'Please Select' }, ...res]
                 });
-                console.log('billing role loaded');
                 callback();
             }, error => {
                 this.setState({
@@ -95,7 +132,6 @@ class ListResource extends Component {
             this.setState({
                 projectId,
                 projectSelectionDisabled: true
-                
             });
             this.loadBillingRole(projectId, () => { });
         } else {
@@ -123,7 +159,6 @@ class ListResource extends Component {
 
     editAllocation = (nr, resourceId, resourceName, projectId, projectResourceId, projectLocationBillingRoleId, allocationTypeId, allocationPercentage, allocationStartDate, allocationEndDate) => {
         this.loadBillingRole(projectId, () => {
-
             let modalNumber = 'modal' + nr
             this.setState({
                 [modalNumber]: !this.state[modalNumber],
@@ -140,11 +175,7 @@ class ListResource extends Component {
                 allocationStartDate,
                 allocationEndDate
             });
-            console.log('billing role loaded and state set');
-
         });
-
-
     }
 
     assignResource = (e) => {
@@ -253,65 +284,87 @@ class ListResource extends Component {
                 <MDBRow between>
                     <MDBCol md="6"><SearchBox /></MDBCol>
                     <MDBCol md="2">
-                        <MDBBtn onClick={() => { this.addResource() }} color="primary" size="sm">
-                            <MDBIcon icon="new" /> Add Resource
-                        </MDBBtn>
                     </MDBCol>
                 </MDBRow>
 
-                <Table responsiveLg striped small>
-                    <TableHead color="primary-color" textWhite>
-                        <tr>
-                            <th>name</th>
-                            <th>designation</th>
-                            <th>skills</th>
-                            <th>reporting&nbsp;manager</th>
-                            <th>resource&nbsp;owner</th>
-                            <th>projects</th>
-                            <th>allocation&nbsp;%</th>
-                            <th>start&nbsp;date</th>
-                            <th>end&nbsp;date</th>
-                            <th>billing&nbsp;type</th>
-                            <th>action</th>
-                        </tr>
-                    </TableHead>
-                    <TableBody>
-                        {resources.map(resource =>
-                            <tr key={resource.resourceId}>
-                                <td><a href={'/resources/' + resource.resourceId}>{resource.name}</a></td>
-                                <td>{resource.designation}</td>
+                <MDBCard narrow>
+                    <MDBCardHeader className="view view-cascade gradient-card-header blue-gradient d-flex justify-content-between align-items-center py-2 mx-4 mb-3">
+                        <div>
+                            <MDBBtn outline rounded size="sm" onClick={() => { this.toggleTab('My') }} color="white" className="px-2">
+                                <i className="fa fa-th-large mt-0"></i> My
+                            </MDBBtn>
+                            <MDBBtn outline rounded size="sm" onClick={() => { this.toggleTab('All') }} color="white" className="px-2">
+                                <i className="fa fa-columns mt-0"></i> All1
+                            </MDBBtn>
+                        </div>
+                        <a href="#" className="white-text mx-3">{this.state.tabSelected} Resources ({this.state.noOfResources})</a>
+                        <div>
+                            <MDBBtn onClick={() => { this.addResource() }} outline rounded size="sm" color="white" className="px-2">
+                                <i className="fa fa-plus mt-0"></i> Add Resource
+                            </MDBBtn>
+                        </div>
+                    </MDBCardHeader>
+                    <MDBCardBody cascade>
 
-                                <td>{resource.skill}</td>
-                                <td>{resource.reportingManager}</td>
-                                <td>{resource.resourceOwner}</td>
-                                <td colSpan="5">
-                                    <Table borderless responsiveLg small>
-                                        <TableBody>
-                                            {resource.allocatedProjects && resource.allocatedProjects.map(project =>
-                                                <tr key={project.projectResourceId}>
-                                                    <td><a href={'/projects/' + project.projectId}>{project.projectName}</a></td>
-                                                    <td>{project.allocationPercentage}</td>
-                                                    <td>{new moment(project.startDate).format('YYYY-MM-DD')}</td>
-                                                    <td>{new moment(project.endDate).format('YYYY-MM-DD')}</td>
-                                                    <td>{project.allocationType}</td>
-                                                    <td><img onClick={() => { this.editAllocation(15, resource.resourceId, resource.name, project.projectId, project.projectResourceId, project.projectLocationBillingRoleId, project.allocationTypeId, project.allocationPercentage, new moment(project.startDate), new moment(project.endDate)) }} src="/images/edit-icon.svg" /></td>
-                                                </tr>
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </td>
-                                <td>
-                                    <MDBBtn onClick={() => this.toggle(15, resource.resourceId, resource.name)} color="primary" size="sm">
-                                        Assign
-                                    </MDBBtn>
-                                </td>
-                            </tr>
-                        )}
-                    </TableBody>
-                </Table>
+                        <Table responsiveLg striped small>
+                            <TableHead color="primary-color" textWhite>
+                                <tr>
+                                    <th>name</th>
+                                    <th>designation</th>
+                                    <th>skills</th>
+                                    <th>reporting&nbsp;manager</th>
+                                    <th>resource&nbsp;owner</th>
+                                    <th>projects</th>
+                                    <th>allocation&nbsp;%</th>
+                                    <th>start&nbsp;date</th>
+                                    <th>end&nbsp;date</th>
+                                    <th>billing&nbsp;type</th>
+                                    <th>action</th>
+                                </tr>
+                            </TableHead>
+                            <TableBody>
+                                {resources.map(resource =>
+                                    <tr key={resource.resourceId}>
+                                        <td><a href={'/resources/' + resource.resourceId}>{resource.name}</a></td>
+                                        <td>{resource.designation}</td>
+
+                                        <td>{resource.skill}</td>
+                                        <td>{resource.reportingManager}</td>
+                                        <td>{resource.resourceOwner}</td>
+                                        <td colSpan="5">
+                                            <Table borderless responsiveLg small>
+                                                <TableBody>
+                                                    {resource.allocatedProjects && resource.allocatedProjects.map(project =>
+                                                        <tr key={project.projectResourceId}>
+                                                            <td><a href={'/projects/' + project.projectId}>{project.projectName}</a></td>
+                                                            <td>{project.allocationPercentage}</td>
+                                                            <td>{new moment(project.startDate).format('YYYY-MM-DD')}</td>
+                                                            <td>{new moment(project.endDate).format('YYYY-MM-DD')}</td>
+                                                            <td>{project.allocationType}</td>
+                                                            <td>
+                                                                <i title="Edit" onClick={() => { this.editAllocation(15, resource.resourceId, resource.name, project.projectId, project.projectResourceId, project.projectLocationBillingRoleId, project.allocationTypeId, project.allocationPercentage, new moment(project.startDate), new moment(project.endDate)) }} className="custom-hand fa fa-edit mt-0"></i>&nbsp;
+                                                                <i title="Delete" onClick={() => { this.editAllocation(15, resource.resourceId, resource.name, project.projectId, project.projectResourceId, project.projectLocationBillingRoleId, project.allocationTypeId, project.allocationPercentage, new moment(project.startDate), new moment(project.endDate)) }} className="custom-hand fa fa-remove mt-0"></i>
+
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </TableBody>
+                                            </Table>
+                                        </td>
+                                        <td>
+
+                                            <i title="Assign Resource" onClick={() => this.toggle(15, resource.resourceId, resource.name)} className="custom-hand fa fa-plus mt-0"></i>
+                                        </td>
+                                    </tr>
+                                )}
+                            </TableBody>
+                        </Table>
+
+                    </MDBCardBody>
+                </MDBCard>
                 {
                     this.state.hasNextPage &&
-                    <button className="load-more-button" onClick={() => { this.loadResources(this.state.pageNumber + 1) }} > load more</button>
+                    <button className="load-more-button" onClick={() => { this.loadMore(this.state.pageNumber + 1) }} > load more</button>
                 }
 
                 <Modal isOpen={this.state.modal15} toggle={() => this.toggle(15)} centered size="lg">

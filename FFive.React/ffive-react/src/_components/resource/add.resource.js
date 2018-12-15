@@ -328,10 +328,10 @@ class AddResource extends Component {
                                 <MDBCol md="4">
                                 </MDBCol>
                                 <MDBCol md="2">
-                                    <MDBBtn color="cyan" type="button" size="sm">Cancel</MDBBtn>
+                                    <MDBBtn color="cyan" onClick={() => { history.push('/resources'); }} type="button" size="sm">Cancel</MDBBtn>
                                 </MDBCol>
                                 <MDBCol md="2">
-                                    <MDBBtn color="cyan" type="submit" size="sm">Add Client</MDBBtn>
+                                    <MDBBtn color="cyan" type="submit" size="sm">Add Resource</MDBBtn>
                                 </MDBCol>
                             </MDBRow>
 

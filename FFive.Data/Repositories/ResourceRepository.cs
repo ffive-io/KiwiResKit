@@ -57,7 +57,7 @@ namespace FFive.Data.Repositories
                     .ThenInclude(a => a.AllocationType)
                 .Include(a => a.ProjectResources)
                     .ThenInclude(a => a.Project)
-                    .AsQueryable();
+                .AsQueryable();
 
             if (orderByExpression != null)
                 query = query.OrderBy(orderByExpression);
@@ -120,6 +120,46 @@ namespace FFive.Data.Repositories
                 Name = a.FirstName + ' ' + a.LastName + '-' + a.EmpCode
             }).ToListAsync();
             return users;
+        }
+
+        public PagedList<Resource> GetMyResources(Guid managerId, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null)
+        {
+            var resources = _appDbContext.Resources.AsQueryable();
+
+            List<Guid> subordinates = new List<Guid>(GetSubordinates(resources, managerId));
+            for (int i = 0; i < subordinates.Count; i++)
+            {
+                subordinates.AddRange(GetSubordinates(resources, subordinates[i]).Except(subordinates));
+            }
+
+            if (pagingParams == null)
+                pagingParams = new PagingParams();
+
+            var query = _appDbContext.Resources
+                .Include(a => a.Manager)
+                .Include(a => a.ResourceOwner)
+                .Include(a => a.Skillset)
+                .Include(a => a.ProjectResources)
+                    .ThenInclude(a => a.AllocationType)
+                .Include(a => a.ProjectResources)
+                    .ThenInclude(a => a.Project)
+                .Where(a => subordinates.Contains(a.Id))
+                    .AsQueryable();
+
+            if (orderByExpression != null)
+                query = query.OrderBy(orderByExpression);
+
+            if (whereExpression != null)
+                query = query.Where(whereExpression);
+
+            return new PagedList<Resource>(query, pagingParams.PageNumber, pagingParams.PageSize);
+        }
+
+        private IEnumerable<Guid> GetSubordinates(IEnumerable<Resource> resources, Guid resourceId)
+        {
+            return from res in resources
+                   where res.ManagerId == resourceId
+                   select res.Id;
         }
     }
 }

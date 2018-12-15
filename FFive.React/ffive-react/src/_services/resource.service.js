@@ -5,6 +5,7 @@ export const resourceService = {
     getById,
     add,
     update,
+    getMyResources,
     getAllByRoleName,
     createUserAccountForResource,
     getAllResourceOwnerNames,
@@ -12,6 +13,14 @@ export const resourceService = {
     getAllNames,
     delete: _delete
 };
+
+function getMyResources(pageNumber) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+    return fetch(config.apiUrl + '/api/v1/resources/bymanager?page=' + pageNumber, requestOptions).then(handleResponse, handleError);
+}
 
 function getAll(pageNumber) {
     const requestOptions = {
@@ -37,7 +46,6 @@ function getAllManagerNames() {
     return fetch(config.apiUrl + '/api/v1/resources/allmanagers', requestOptions).then(handleResponse, handleError);
 }
 
-
 function getAllResourceOwnerNames() {
     const requestOptions = {
         method: 'GET',
@@ -45,7 +53,6 @@ function getAllResourceOwnerNames() {
     };
     return fetch(config.apiUrl + '/api/v1/resources/allresourceowners', requestOptions).then(handleResponse, handleError);
 }
-
 
 function getAllByRoleName(roleName) {
     const requestOptions = {

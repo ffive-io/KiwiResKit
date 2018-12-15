@@ -111,3 +111,7 @@ body {
 .react-autosuggest__suggestion--highlighted {
     background-color: #ddd;
 }
+
+.custom-hand {
+    cursor: pointer;
+}
