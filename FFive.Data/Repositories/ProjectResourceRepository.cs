@@ -55,8 +55,8 @@ namespace FFive.Data.Repositories
         {
             var existingAllocationList = _appDbContext.ProjectResources
                 .Where(a => a.ResourceId == entity.ResourceId)
-                .Where(a => (entity.AllocationStartDate < a.AllocationEndDate &&
-                entity.AllocationEndDate > a.AllocationStartDate))
+                .Where(a => (entity.AllocationStartDate <= a.AllocationEndDate &&
+                entity.AllocationEndDate >= a.AllocationStartDate))
                 .Select(a => new ProjAllocation
                 {
                     StartDate = a.AllocationStartDate,
