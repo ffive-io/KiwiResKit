@@ -26,15 +26,64 @@ class Login extends Component {
         const { loggingIn } = this.props;
 
         return (
-            <GoogleLogin
-                clientId={config.googleClientId}
-                onSuccess={this.googleResponse.bind(this)}
-                onFailure={this.onFailure.bind(this)}
-                render={renderProps => (
-                    <MDBBtn onClick={renderProps.onClick} color="danger">
-                        <Fa icon="google-plus" className="pr-1" /> Google +</MDBBtn>
-                )}
-            />
+
+
+            <div className="login-height">
+                <div className="login-height">
+                    <div className="main-bg-section">
+                        <div className="login-panel">
+                            <div className="logo-div">
+                                <img
+                                    src="images/resourcekit-login-logo.png"
+                                    className="logo"
+                                    alt="company-logo"
+                                />
+                            </div>
+                            <div className="sign_in_btn">
+                                <GoogleLogin
+                                    clientId={config.googleClientId}
+                                    onSuccess={this.googleResponse.bind(this)}
+                                    onFailure={this.onFailure.bind(this)}
+                                    render={renderProps => (
+                                        <button
+                                            type=""
+                                            className="btn-social"
+                                            onClick={renderProps.onClick}
+                                        >
+                                            <span>
+                                                <img src="images/google-plus.png" alt="" />
+                                            </span>
+                                            Sign In with KiwiTech ID
+                                        </button>
+                                    )}
+                                />
+                                <p className="problem_login">
+                                    Problem Logging In?{" "}
+                                    <a
+                                        href="mailto:it@kiwitech.com"
+                                        target="_top"
+                                        className="contact_us"
+                                    >
+                                        Contact Us
+                  </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <footer className="kit_footer">
+                        <div className="col-xs-12 text-center">
+                            <div className="copy_info"> © 2018 KiwiTech</div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+
+
+
+
+
+
+            
         );
     }
 }

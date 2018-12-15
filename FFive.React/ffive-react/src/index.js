@@ -10,6 +10,9 @@ import 'react-dates/lib/css/_datepicker.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { store, history } from './_helpers';
+import "./css/simple-sidebar.css";
+import "./css/style.scss";
+
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');

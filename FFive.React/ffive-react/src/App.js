@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Layout from './_components/shared/Layout';
-import { Route, Switch } from 'react-router';
+import BaseLayout from './_components/shared/base-layout';
+import { Route, Switch, Redirect } from 'react-router';
 import { Home } from './_components/dummy/Home';
 import { ListPlatform, AddPlatform, EditPlatform } from './_components/platform';
 import { ListClient, AddClient, DetailClient } from './_components/client';
@@ -9,9 +10,47 @@ import { ListResource, AddResource } from './_components/resource';
 import { ListLocationBillingRole } from './_components/location-billingrole';
 import { Counter } from './_components/dummy/Counter';
 import { Login } from './_components/auth/Login';
-import { PrivateRoute } from './_components/auth/PrivateRoute';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+
+
+const DashboardLayout = ({ children, ...rest }) => {
+    return (
+        <Layout>
+            {children}
+        </Layout>
+    )
+}
+
+const LoginLayout = ({ children, ...rest }) => {
+    return (
+        <BaseLayout>
+            {children}
+        </BaseLayout>
+    )
+}
+
+const DashboardRoute = ({ component: Component, ...rest }) => {
+    return (
+        <Route {...rest} render={matchProps => (
+            localStorage.getItem('user')
+                ? (
+                    <DashboardLayout>
+                        <Component {...matchProps} />
+                    </DashboardLayout>
+                ) : (<Redirect to={{ pathname: '/login', state: { from: matchProps.location } }} />)
+        )} />
+    )
+};
+
+const LoginLayoutRoute = ({ component: Component, ...rest }) => {
+    return (
+        <Route {...rest} render={matchProps => (
+            <LoginLayout>
+                <Component {...matchProps} />
+            </LoginLayout>
+        )} />
+    )
+};
+
 
 class App extends Component {
     displayName = App.name
@@ -27,36 +66,34 @@ class App extends Component {
 
     render() {
         return (
-            <Layout>
-                <Switch>
-                    <Route exact path='/' component={Home} />
-                    <Route exact path='/login' component={Login} />
-                    <PrivateRoute path='/counter' component={Counter} />
+            <Switch>
+                <LoginLayoutRoute exact path='/login' component={Login} />
 
-                    <PrivateRoute exact path='/resources/add' component={AddResource} />
-                    <PrivateRoute exact path='/resources' component={ListResource} />
-                    <PrivateRoute exact path='/resources/:id' component={ListResource} />
+                <DashboardRoute exact path='/' component={Home} />
+                <DashboardRoute path='/counter' component={Counter} />
 
-                    <PrivateRoute exact path='/projects/add' component={AddProject} />
-                    <PrivateRoute exact path='/projects' component={ListProject} />
-                    <PrivateRoute exact path='/projects/:id' component={DetailProject} />
-                    <PrivateRoute exact path='/projects/:id/allocate' component={ListResource} />
+                <DashboardRoute exact path='/resources/add' component={AddResource} />
+                <DashboardRoute exact path='/resources' component={ListResource} />
+                <DashboardRoute exact path='/resources/:id' component={ListResource} />
 
-                    <PrivateRoute path='/clients/add' component={AddClient} />
-                    <PrivateRoute exact path='/clients' component={ListClient} />
-                    <PrivateRoute exact path='/clients/:id' component={DetailClient} />
-                    <PrivateRoute exact path='/clients/:id/projects/add' component={AddProject} />
+                <DashboardRoute exact path='/projects/add' component={AddProject} />
+                <DashboardRoute exact path='/projects' component={ListProject} />
+                <DashboardRoute exact path='/projects/:id' component={DetailProject} />
+                <DashboardRoute exact path='/projects/:id/allocate' component={ListResource} />
 
-                    <PrivateRoute exact path='/billingroles/add' component={AddProject} />
-                    <PrivateRoute exact path='/billingroles' component={ListLocationBillingRole} />
-                    <PrivateRoute exact path='/billingroles/:id' component={DetailProject} />
+                <DashboardRoute path='/clients/add' component={AddClient} />
+                <DashboardRoute exact path='/clients' component={ListClient} />
+                <DashboardRoute exact path='/clients/:id' component={DetailClient} />
+                <DashboardRoute exact path='/clients/:id/projects/add' component={AddProject} />
 
+                <DashboardRoute exact path='/billingroles/add' component={AddProject} />
+                <DashboardRoute exact path='/billingroles' component={ListLocationBillingRole} />
+                <DashboardRoute exact path='/billingroles/:id' component={DetailProject} />
 
-                    <PrivateRoute path='/platforms/add' component={AddPlatform} />
-                    <PrivateRoute path='/platforms/edit' component={EditPlatform} />
-                    <PrivateRoute path='/platforms' component={ListPlatform} />
-                </Switch>
-            </Layout>
+                <DashboardRoute path='/platforms/add' component={AddPlatform} />
+                <DashboardRoute path='/platforms/edit' component={EditPlatform} />
+                <DashboardRoute path='/platforms' component={ListPlatform} />
+            </Switch>
         );
     }
 }
