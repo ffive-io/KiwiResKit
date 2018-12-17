@@ -6,6 +6,7 @@ import moment from 'moment';
 import { alertActions } from '../../_actions';
 import { Badge, MDBIcon, Table, TableBody, TableHead, MDBCol, MDBRow, MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardHeader, MDBBtn, MDBContainer } from "mdbreact";
 import AddClientContactModal from './add.client-contact-modal';
+import EditClientModal from './edit.client-modal';
 
 class DetailClient extends Component {
     displayName = DetailClient.name
@@ -27,7 +28,9 @@ class DetailClient extends Component {
             numberOfProjects: 0,
             clientContacts: [],
             projects: [],
-            locations: []
+            locations: [],
+            clientTypes: [],
+            preSales: []
         };
     }
 
@@ -38,8 +41,9 @@ class DetailClient extends Component {
                 this.setState({
                     clientName: res.name, streetAddress: res.streetAddress, city: res.city, state: res.state,
                     country: res.location.name, zip: res.zipCode, locationId: res.location.id,
-                    since: res.createdAt, clientType: res.clientType.name,
+                    since: res.createdAt, clientType: res.clientType.name, clientTypeId: res.clientType.id,
                     salesRep: res.salesContact.firstName + ' ' + res.salesContact.lastName,
+                    salesContactId: res.salesContact.id,
                     clientContacts: res.clientContacts,
                     projects: res.projects,
                     numberOfProjects: res.projects.length,
@@ -59,7 +63,41 @@ class DetailClient extends Component {
                     locations: [{ id: '', name: 'Please Select' }]
                 });
             });
+
+        clientTypeService.getAll(1)
+            .then(res => {
+                this.setState({
+                    clientTypes: [{ id: '', name: 'Please Select' }, ...res.data]
+                });
+            }, error => {
+                this.setState({
+                    clientTypes: [{ id: '', name: 'Please Select' }]
+                });
+            });
+
+        userService.getAllByRoleName('presales')
+            .then(res => {
+                var newPresales = res.data.map(elem => {
+                    return {
+                        id: elem.id,
+                        name: elem.firstName + ' ' + elem.lastName
+                    };
+                });
+
+                this.setState({
+                    preSales: [{ id: '', name: 'Please Select' }, ...newPresales]
+                });
+            }, error => {
+                this.setState({
+                    preSales: [{ id: '', name: 'Please Select' }]
+                });
+            });
     }
+
+    onEditClient = clientData => {
+        
+    }
+
 
     onAddClientContact = clientContact => {
         var finalClientContact = { clientId: this.state.clientId, ...clientContact };
@@ -95,8 +133,6 @@ class DetailClient extends Component {
                 <h2><Badge color="cyan" pill>Client</Badge>
                 </h2>
 
-
-                
                 <MDBCard border="primary" className="m-3" >
                     <MDBCardHeader>{this.state.clientName}</MDBCardHeader>
                     <MDBCardBody className="text-dark">
@@ -127,8 +163,7 @@ class DetailClient extends Component {
                             </MDBCol>
 
                         </MDBRow>
-
-                        <MDBBtn color="primary" size="sm">Edit</MDBBtn>
+                        <EditClientModal {...this.props} onSubmit={this.onEditClient} client={this.state} />
                     </MDBCardBody>
                 </MDBCard>
 

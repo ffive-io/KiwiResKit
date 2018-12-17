@@ -117,9 +117,9 @@ class ListProject extends Component {
                                 <td>{project.projectHead}</td>
                                 <td>{project.projectStatus}</td>
                                 <td>{project.noOfResource}</td>
-
                                 <td>
-                                    <a onClick={() => { this.editProject(project.projectId) }} href="/">Edit</a>&nbsp;<a onClick={() => { this.deleteProject(project.projectId) }} href="/">Delete</a>
+                                    <i title="Edit" onClick={() => { this.editProject(project.projectId) }} className="custom-hand fa fa-edit mt-0"></i>&nbsp;
+                                    <i title="Delete" onClick={() => { this.deleteProject(project.projectId) }} className="custom-hand fa fa-remove mt-0"></i>
                                 </td>
                             </tr>
                         )}

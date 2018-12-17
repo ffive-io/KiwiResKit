@@ -35,14 +35,14 @@ function add(platform) {
     return fetch(config.apiUrl + '/api/v1/clients', requestOptions).then(handleResponse, handleError);
 }
 
-function update(platorm) {
+function update(id, platorm) {
     const requestOptions = {
         method: 'PUT',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
         body: JSON.stringify(platorm)
     };
 
-    return fetch(config.apiUrl + '/api/v1/clients/' + platorm.id, requestOptions).then(handleResponse, handleError);
+    return fetch(config.apiUrl + '/api/v1/clients/' + id, requestOptions).then(handleResponse, handleError);
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

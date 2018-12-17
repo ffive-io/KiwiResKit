@@ -1,7 +1,9 @@
 ﻿import { authHeader, config } from '../_helpers';
 
 export const projectResourceService = {
-    add
+    add,
+    update,
+    delete: _delete
 };
 
 function getAll(pageNumber) {
@@ -31,14 +33,14 @@ function add(item) {
     return fetch(config.apiUrl + '/api/v1/projectresources', requestOptions).then(handleResponse, handleError);
 }
 
-function update(item) {
+function update(id, item) {
     const requestOptions = {
         method: 'PUT',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
         body: JSON.stringify(item)
     };
 
-    return fetch(config.apiUrl + '/api/v1/projectresources/' + item.id, requestOptions).then(handleResponse, handleError);
+    return fetch(config.apiUrl + '/api/v1/projectresources/' + id, requestOptions).then(handleResponse, handleError);
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

@@ -149,6 +149,15 @@ namespace FFive.API.v1.Controllers
             try
             {
                 var client = _mapper.Map<Client>(entity);
+                if (client != null)
+                {
+                    var existingClient = await _clientService.GetByIdAsync(client.Id);
+
+                    client.CreatedAt = existingClient.CreatedAt;
+                    client.UpdatedAt = DateTime.UtcNow;
+                    client.Status = existingClient.Status;
+                }
+
                 var itemCount = await _clientService.UpdateAsync(id, client);
                 if (itemCount > 0)
                 {

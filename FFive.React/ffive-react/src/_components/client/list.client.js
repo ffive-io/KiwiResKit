@@ -115,7 +115,8 @@ class ListClient extends Component {
                                 </td>
                                 <td>{client.salesContact}</td>
                                 <td>
-                                    <a onClick={() => { this.editClient(client.clientId) }} href="/">Edit</a>&nbsp;<a onClick={() => { this.deleteClient(client.clientId) }} href="/">Delete</a>
+                                    <i title="Edit" onClick={() => { history.push('/clients/' + client.clientId); }} className="custom-hand fa fa-edit mt-0"></i>&nbsp;
+                                    <i title="Delete" onClick={() => { this.deleteClient(client.clientId) }} className="custom-hand fa fa-remove mt-0"></i>
                                 </td>
                             </tr>
                         )}

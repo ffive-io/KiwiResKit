@@ -9,6 +9,7 @@ namespace FFive.Data.Repositories
 {
     public class ProjAllocation
     {
+        public Guid ProjectResourceId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int AllocationPercent { get; set; }
@@ -70,6 +71,50 @@ namespace FFive.Data.Repositories
 
             if ((entity.AllocationPercent + maxAllo) <= 100)
             {
+                await _appDbContext.ProjectResources.AddAsync(entity);
+                return await _appDbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new System.Exception("Cannot allocate resource more than 100%");
+            }
+        }
+
+        public new async Task<int> UpdateAsync(Guid id, ProjectResource entity)
+        {
+            var currentAllocation = await _appDbContext.ProjectResources.FindAsync(id);
+
+            var existingAllocationList = _appDbContext.ProjectResources
+                .Where(a => a.ResourceId == entity.ResourceId)
+                .Where(a => (entity.AllocationStartDate <= a.AllocationEndDate &&
+                entity.AllocationEndDate >= a.AllocationStartDate))
+                .Select(a => new ProjAllocation
+                {
+                    ProjectResourceId = a.Id,
+                    StartDate = a.AllocationStartDate,
+                    EndDate = a.AllocationEndDate,
+                    AllocationPercent = a.AllocationPercent
+                }).ToList();
+
+            for (int i = existingAllocationList.Count - 1; i >= 0; i--)
+            {
+                if (existingAllocationList[i].ProjectResourceId == currentAllocation.Id)
+                    existingAllocationList.RemoveAt(i);
+            }
+
+            //foreach (var item in existingAllocationList)
+            //{
+            //    if (item.ProjectResourceId == currentAllocation.Id)
+            //        existingAllocationList.Remove(item);
+            //}
+
+            int maxAllo = GetMaxAllocationInDateRange(existingAllocationList, entity.AllocationStartDate, entity.AllocationEndDate);
+
+            Debug.WriteLine("maxAll " + maxAllo.ToString());
+
+            if ((entity.AllocationPercent + maxAllo) <= 100)
+            {
+                _appDbContext.ProjectResources.Remove(currentAllocation);
                 await _appDbContext.ProjectResources.AddAsync(entity);
                 return await _appDbContext.SaveChangesAsync();
             }

@@ -91,15 +91,16 @@ namespace FFive.API.v1.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProjectResource>> Put(Guid id, [FromBody]ProjectResource entity)
+        public async Task<ActionResult<ProjectResource>> Put(Guid id, [FromBody]ProjectResourceCreate entity)
         {
             try
             {
-                var itemCount = await _genericService.UpdateAsync(id, entity);
+                var projectResource = _mapper.Map<ProjectResource>(entity);
+                var itemCount = await _genericService.UpdateAsync(id, projectResource);
 
                 if (itemCount > 0)
                 {
-                    return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
+                    return CreatedAtAction(nameof(Get), new { id = projectResource.Id }, projectResource);
                 }
 
                 return NotFound();

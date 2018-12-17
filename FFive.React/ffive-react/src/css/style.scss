@@ -8,6 +8,7 @@
 .client-listing-section {
     width: 100%;
     float: left;
+
     .search-panel {
         width: 100%;
         float: left;
@@ -15,16 +16,19 @@
         background-color: #e7e7e7;
         padding: 9px 10px;
         margin: 0 0 30px 0;
+
         .search-input {
             width: 40%;
             float: left;
             margin: 0 8px 0 0;
         }
     }
+
     .client-listing-panel {
         width: 100%;
         float: left;
         margin: 0 0 40px 0;
+
         .count-head {
             width: 100%;
             float: left;
@@ -36,10 +40,12 @@
             height: 50px;
             background-color: #e7e7e7;
             position: relative;
+
             span {
                 font-family: $font-bold;
                 color: #000000;
             }
+
             button {
                 position: absolute;
                 bottom: 6px;
@@ -54,6 +60,7 @@
     float: left;
     padding: 101px 0 0 0;
     text-align: center;
+
     .inner-panel {
         width: 100%;
         float: left;
@@ -64,6 +71,7 @@
         text-align: center;
         color: #9b9b9b;
     }
+
     .no-search-div {
         width: 100%;
         float: left;
@@ -74,6 +82,7 @@
         text-align: center;
         color: #9b9b9b;
     }
+
     .sub-section {
         width: 100%;
         float: left;
@@ -82,6 +91,7 @@
         line-height: 1.78;
         text-align: center;
         color: #9b9b9b;
+
         span {
             text-decoration: underline;
         }
@@ -93,6 +103,7 @@
     float: left;
     padding: 1px 0 0 0;
     text-align: center;
+
     .client-table-head {
         width: 100%;
         float: left;
@@ -106,50 +117,60 @@
         text-align: left;
         min-height: 50px;
         background-color: #4598db;
+
         .col-tab-1 {
             width: 7%;
             float: left;
         }
+
         .col-tab-2 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-3 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-4 {
             width: 13%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-5 {
             width: 15%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-6 {
             width: 13%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-7 {
             width: 8%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-8 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-9 {
             width: 7%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-10 {
             width: 7%;
             float: right;
@@ -157,6 +178,7 @@
             text-align: right;
         }
     }
+
     .client-table-rows {
         width: 100%;
         border-radius: 3px;
@@ -172,53 +194,64 @@
         word-wrap: break-word;
         margin: 0 0 1px 0;
         text-align: left;
+
         img {
             margin: 0 0 0 10px;
         }
+
         .row-col-1 {
             width: 7%;
             float: left;
         }
+
         .row-col-2 {
             width: 10%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-3 {
             width: 10%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-4 {
             width: 13%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-5 {
             width: 15%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-6 {
             width: 13%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-7 {
             width: 8%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-8 {
             width: 10%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-9 {
             width: 7%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-10 {
             width: 7%;
             padding: 0 0 0 15px;
@@ -236,10 +269,12 @@
     background-color: #ffffff;
     padding: 20px 20px 29px 45px;
     margin: 12px 0 25px 0;
+
     .left-section {
         width: 50%;
         float: left;
         border-right: 1px solid #eeeeee;
+
         h1 {
             font-family: $font-semibold;
             font-size: 30px;
@@ -247,6 +282,7 @@
             word-wrap: break-word;
             padding: 0 0 5px 0;
         }
+
         .address-div {
             font-family: $font-regular;
             font-size: 18px;
@@ -257,14 +293,17 @@
             margin: 0 0 20px 0;
         }
     }
+
     .right-section {
         width: 50%;
         float: left;
         padding: 0 0 0 55px;
+
         .row-section {
             width: 100%;
             float: left;
             padding: 0 0 13px 0;
+
             .left-column {
                 width: 50%;
                 float: left;
@@ -272,6 +311,7 @@
                 font-size: 18px;
                 color: #626262;
             }
+
             .right-column {
                 width: 50%;
                 float: left;
@@ -295,6 +335,7 @@
     right: 150px;
     bottom: 10px;
     position: absolute;
+
     .projects-status-count {
         width: auto;
         font-family: $font-regular;
@@ -302,6 +343,7 @@
         color: #9b9b9b;
         float: left;
         margin: 0 0 0 25px;
+
         span {
             font-size: 18px;
             color: #000000;
@@ -314,6 +356,7 @@
     float: left;
     padding: 1px 0 0 0;
     text-align: center;
+
     .client-table-head {
         width: 100%;
         float: left;
@@ -327,30 +370,36 @@
         text-align: left;
         min-height: 50px;
         background-color: #4598db;
+
         .col-tab-1 {
             width: 20%;
             float: left;
         }
+
         .col-tab-2 {
             width: 20%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-3 {
             width: 20%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-4 {
             width: 20%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-5 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-6 {
             width: 10%;
             float: right;
@@ -358,6 +407,7 @@
             text-align: right;
         }
     }
+
     .client-table-rows {
         width: 100%;
         border-radius: 3px;
@@ -373,33 +423,40 @@
         word-wrap: break-word;
         margin: 0 0 1px 0;
         text-align: left;
+
         img {
             margin: 0 0 0 10px;
         }
+
         .row-col-1 {
             width: 20%;
             float: left;
         }
+
         .row-col-2 {
             width: 20%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-3 {
             width: 20%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-4 {
             width: 20%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-5 {
             width: 10%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-6 {
             width: 10%;
             padding: 0 0 0 15px;
@@ -407,6 +464,7 @@
             text-align: right;
         }
     }
+
     .view-client-link {
         width: 100%;
         float: left;
@@ -424,6 +482,7 @@
     float: left;
     padding: 1px 0 70px 0;
     text-align: center;
+
     .client-table-head {
         width: 100%;
         float: left;
@@ -437,35 +496,42 @@
         text-align: left;
         min-height: 50px;
         background-color: #4598db;
+
         .col-tab-1 {
             width: 19%;
             float: left;
         }
+
         .col-tab-2 {
             width: 20%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-3 {
             width: 20%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-4 {
             width: 20%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-5 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-6 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-7 {
             width: 11%;
             float: right;
@@ -473,6 +539,7 @@
             text-align: right;
         }
     }
+
     .client-table-rows {
         width: 100%;
         border-radius: 3px;
@@ -488,38 +555,46 @@
         word-wrap: break-word;
         margin: 0 0 1px 0;
         text-align: left;
+
         img {
             margin: 0 0 0 10px;
         }
+
         .row-col-1 {
             width: 19%;
             float: left;
         }
+
         .row-col-2 {
             width: 20%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-3 {
             width: 20%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-4 {
             width: 20%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-5 {
             width: 10%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-6 {
             width: 10%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-7 {
             width: 11%;
             padding: 0 0 0 15px;
@@ -535,6 +610,7 @@
     border-top: solid 1px #e3e3e3;
     background-color: #f9f8f8;
     padding: 0 30px 30px 30px;
+
     .head-section {
         width: 100%;
         float: left;
@@ -545,42 +621,50 @@
         display: flex;
         align-items: center;
         justify-content: left;
+
         .col-tab-1 {
             width: 15%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-2 {
             width: 25%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-3 {
             width: 20%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-4 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-5 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-6 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-7 {
             width: 10%;
             float: left;
             padding: 0 15px 0 15px;
         }
     }
+
     .row-div-section {
         width: 100%;
         float: left;
@@ -595,48 +679,44 @@
         padding: 17px 0;
         word-wrap: break-word;
         margin-bottom: 4px;
+
         .col-row-1 {
             width: 15%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-row-2 {
             width: 25%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-row-3 {
             width: 20%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-row-4 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-row-5 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-row-6 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
             position: relative;
-            .check-box {
-                margin-right: 0;
-                input {
-                    height: 26px;
-                    width: auto;
-                }
-                label {
-                    top: 5px;
-                    left: 13px;
-                }
-            }
         }
+
         .col-row-7 {
             width: 10%;
             float: left;
@@ -656,6 +736,7 @@
     height: 50px;
     background-color: #e7e7e7;
     position: relative;
+
     span {
         color: #000000;
     }
@@ -674,6 +755,7 @@
     float: left;
     padding: 4px 0 0 0;
     text-align: center;
+
     .my-projects-table-head {
         width: 100%;
         float: left;
@@ -687,60 +769,72 @@
         text-align: left;
         min-height: 50px;
         background-color: #4598db;
+
         .col-tab-1 {
             width: 8%;
             float: left;
         }
+
         .col-tab-2 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-3 {
             width: 8%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-4 {
             width: 8%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-5 {
             width: 8%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-6 {
             width: 8%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-7 {
             width: 8%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-8 {
             width: 8%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-9 {
             width: 8%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-10 {
             width: 8%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-11 {
             width: 10%;
             float: left;
             padding: 0 0 0 15px;
         }
+
         .col-tab-12 {
             width: 8%;
             float: right;
@@ -748,6 +842,7 @@
             text-align: right;
         }
     }
+
     .my-projects-table-rows {
         width: 100%;
         border-radius: 3px;
@@ -762,66 +857,80 @@
         color: #626262;
         word-wrap: break-word;
         margin: 0 0 1px 0;
+
         &:hover {
             background-color: #f8fcff;
         }
+
         img {
             margin: 0 0 0 10px;
         }
+
         .row-col-1 {
             width: 8%;
             float: left;
         }
+
         .row-col-2 {
             width: 10%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-3 {
             width: 8%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-4 {
             width: 8%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-5 {
             width: 8%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-6 {
             width: 8%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-7 {
             width: 8%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-8 {
             width: 8%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-9 {
             width: 8%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-10 {
             width: 8%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-11 {
             width: 10%;
             padding: 0 0 0 15px;
             float: left;
         }
+
         .row-col-12 {
             width: 8%;
             padding: 0 0 0 15px;
@@ -841,6 +950,7 @@
     transition: all 0.25s;
     transition: all 0.5s ease-in-out;
     margin: 0 20px 0 0;
+
     span {
         width: 5px;
         height: 5px;
@@ -879,9 +989,11 @@
     transition: all 0.5s ease-in-out;
     top: 28px;
     right: -39px;
+
     a {
         color: #000000;
     }
+
     em {
         width: 0;
         height: 0;
@@ -918,9 +1030,11 @@
     transition: all 0.5s ease-in-out;
     top: 28px;
     right: -39px;
+
     a {
         color: #000000;
     }
+
     em {
         width: 0;
         height: 0;
@@ -946,6 +1060,7 @@ width700 {
     color: #2687bc;
     text-align: right;
     margin: -20px 0 50px 0;
+
     &.article {
         color: #2687bc;
     }
@@ -981,10 +1096,12 @@ width700 {
     width: 100%;
     float: left;
     margin: -30px 0 0 0;
+
     .box-div {
         width: 117px;
         float: left;
         margin: 0 15px 30px 0;
+
         .doc-panel {
             width: 100%;
             float: left;
@@ -995,6 +1112,7 @@ width700 {
             padding: 18px 0;
             text-align: center;
         }
+
         .doc-name {
             width: 100%;
             float: left;
@@ -1003,6 +1121,7 @@ width700 {
             color: #2687bc;
             text-decoration: underline;
         }
+
         .remove-div {
             font-family: $font-regular;
             font-size: 14px;
