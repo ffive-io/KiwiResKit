@@ -2,6 +2,7 @@
 using FFive.Data.Models;
 using FFive.Data.Models.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,10 +27,17 @@ namespace FFive.API.Utils
             await SeedRolesAndClaims();
             await SeedMasterData();
             await SeedAdmin();
+            await Seedcalendar();
             //await SeedOpsHead();
             //await SeedProjHead();
             //await SeedUser25();
             //await SeedUser16();
+        }
+
+        private async Task Seedcalendar()
+        {
+            //MySQL specific check when changing the DB type
+            await _appDbContext.Database.ExecuteSqlCommandAsync("CALL filldates('2018-01-01', '2019-12-31')");
         }
 
         private async Task SeedMasterData()

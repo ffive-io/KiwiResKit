@@ -43,8 +43,8 @@ namespace FFive.API.v1.Controllers
         public ActionResult<PagedList<ResourceDto>> Get([FromQuery]int page = 1, string name = null)
         {
             Expression<Func<Resource, bool>> where = null;
-            if (name != null)
-                where = (c) => c.FirstName.Contains(name) || c.LastName.Contains(name);
+            //if (name != null)
+            where = (c) => c.FirstName.Contains("kan") || c.LastName.Contains(name);
 
             Expression<Func<Resource, string>> orderBy = (c) => c.Id.ToString();
 
@@ -94,7 +94,7 @@ namespace FFive.API.v1.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [Route("bymanager")]
-        public ActionResult<PagedList<ResourceDto>> GetMyResources([FromQuery]int page = 1, string name = null)
+        public ActionResult<PagedList<ResourceDto>> GetMyResources([FromQuery]DateTime dateFrom, DateTime dateTo, int page = 1, string name = null)
         {
             Expression<Func<Resource, bool>> where = null;
             if (name != null)
@@ -130,6 +130,8 @@ namespace FFive.API.v1.Controllers
                     EndDate = q.AllocationEndDate,
                     StartDate = q.AllocationStartDate,
                     AllocationTypeId = q.AllocationTypeId,
+                    StartDateFilter = dateFrom,
+                    EndDateFilter = dateTo,
                     ProjectLocationBillingRoleId = q.ProjectLocationBillingRoleId
                 }).ToList()
             }).ToList();

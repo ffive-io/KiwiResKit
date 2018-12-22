@@ -36,6 +36,7 @@ namespace FFive.Data.Models
         public DbSet<ClientContact> ClientContacts { get; set; }
         public DbSet<NotificationTemplate> NotificationTemplates { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
+        public DbSet<Calendar> Calendar { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
