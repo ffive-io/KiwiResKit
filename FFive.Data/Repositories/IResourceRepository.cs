@@ -12,7 +12,8 @@ namespace FFive.Data.Repositories
     {
         PagedList<Resource> GetAllByRoleNameAsync(string roleName, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null);
 
-        PagedList<ResourceDto> GetMyResources(Guid? managerId, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null);
+        PagedList<ResourceDto> GetMyResources(Guid? managerId, AllocType allocType, DateTime startDate,
+            DateTime endDate, PagingParams pagingParams = null, string name = null, string designation = null, Guid? skillsetId = null);
 
         Task<List<SimpleObject>> GetAllUsers();
 

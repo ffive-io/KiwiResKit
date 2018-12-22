@@ -66,6 +66,10 @@ class ListResource extends Component {
                 error => {
                     const { dispatch } = this.props;
                     dispatch(alertActions.error('Resource listing failed!'));
+                    this.setState({
+                        hasNextPage: false
+                    });
+
                     setTimeout(function () {
                         dispatch(alertActions.clear());
                     }, 3000);

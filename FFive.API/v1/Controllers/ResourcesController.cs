@@ -39,7 +39,8 @@ namespace FFive.API.v1.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<PagedList<ResourceDto>> Get([FromQuery]int page = 1, string name = null)
+        public ActionResult<PagedList<ResourceDto>> Get([FromQuery]DateTime startDate,
+            DateTime endDate, AllocType? allocType = AllocType.Any, string name = null, string designation = null, Guid? skillsetId = null, int? page = 1)
         {
             Expression<Func<Resource, bool>> where = null;
             if (name != null)
@@ -47,7 +48,7 @@ namespace FFive.API.v1.Controllers
 
             Expression<Func<Resource, string>> orderBy = (c) => c.Id.ToString();
 
-            var resources = _resourceService.GetMyResources(null, new PagingParams { PageNumber = page }, where, orderBy);
+            var resources = _resourceService.GetMyResources(null, allocType ?? AllocType.Any, startDate, endDate, new PagingParams { PageNumber = page ?? 1 }, name, designation, skillsetId);
 
             if (resources != null)
                 return resources;
@@ -63,7 +64,8 @@ namespace FFive.API.v1.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [Route("bymanager")]
-        public ActionResult<PagedList<ResourceDto>> GetMyResources([FromQuery]DateTime dateFrom, DateTime dateTo, int page = 1, string name = null)
+        public ActionResult<PagedList<ResourceDto>> GetMyResources([FromQuery]DateTime startDate,
+            DateTime endDate, AllocType? allocType = AllocType.Any, string name = null, string designation = null, Guid? skillsetId = null, int? page = 1)
         {
             Expression<Func<Resource, bool>> where = null;
             if (name != null)
@@ -72,8 +74,7 @@ namespace FFive.API.v1.Controllers
             Expression<Func<Resource, string>> orderBy = (c) => c.Id.ToString();
 
             var user = _userManager.GetUserAsync(HttpContext.User).Result;
-
-            var resources = _resourceService.GetMyResources(user.ResourceId, new PagingParams { PageNumber = page }, where, orderBy);
+            var resources = _resourceService.GetMyResources(user.ResourceId, allocType ?? AllocType.Any, startDate, endDate, new PagingParams { PageNumber = page ?? 1 }, name, designation, skillsetId);
 
             if (resources != null)
                 return resources;

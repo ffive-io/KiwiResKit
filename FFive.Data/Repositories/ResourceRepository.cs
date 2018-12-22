@@ -122,14 +122,15 @@ namespace FFive.Data.Repositories
             return users;
         }
 
-        public PagedList<ResourceDto> GetMyResources(Guid? managerId, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null)
+        public PagedList<ResourceDto> GetMyResources(Guid? managerId, AllocType allocType, DateTime startDate,
+            DateTime endDate, PagingParams pagingParams = null, string name = null, string designation = null, Guid? skillsetId = null)
         {
             var resources = _appDbContext.Resources.AsQueryable();
 
             if (pagingParams == null)
                 pagingParams = new PagingParams();
 
-            var spResult = _appDbContext.ResourceSpResult.FromSql($"CALL getresourceallocations({managerId}, 1, '2018-11-01','2018-12-31', null,null,null,{pagingParams.PageNumber})").ToList();
+            var spResult = _appDbContext.ResourceSpResult.FromSql($"CALL getresourceallocations({managerId}, {(int)allocType}, {startDate.ToString("yyyy-MM-dd")}, {endDate.ToString("yyyy-MM-dd")}, {name},{skillsetId},{designation},{pagingParams.PageNumber})").ToList();
 
             var query = _appDbContext.Resources
                 .Include(a => a.Manager)
@@ -141,14 +142,9 @@ namespace FFive.Data.Repositories
                     .ThenInclude(a => a.Project)
                     .AsQueryable();
 
-            if (orderByExpression != null)
-                query = query.OrderBy(orderByExpression);
-
-            if (whereExpression != null)
-                query = query.Where(whereExpression);
-
             var result = (from t in spResult
                           join p in query on t.ResourceId equals p.Id
+                          orderby t.TotalAllocationPerc
                           select new ResourceDto
                           {
                               ResourceId = p.Id,
