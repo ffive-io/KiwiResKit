@@ -15,6 +15,9 @@ namespace FFive.Data.ViewModels
         public Guid? ReportingManagerId { get; set; }
         public Guid? ResourceOwnerId { get; set; }
         public bool IsMyResource { get; set; }
+        public int TotalDays { get; set; }
+        public int AvailableFullDays { get; set; }
+        public int TotalAllocationPerc { get; set; }
         public List<AllocatedProject> AllocatedProjects { get; set; }
     }
 

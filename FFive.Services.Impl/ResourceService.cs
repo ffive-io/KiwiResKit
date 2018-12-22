@@ -198,7 +198,7 @@ namespace FFive.Services.Impl
             return await _resourceRepository.GetAllUsers();
         }
 
-        public PagedList<Resource> GetMyResources(Guid managerId, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null)
+        public PagedList<ResourceDto> GetMyResources(Guid? managerId, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null)
         {
             return _resourceRepository.GetMyResources(managerId, pagingParams, whereExpression, orderByExpression);
         }

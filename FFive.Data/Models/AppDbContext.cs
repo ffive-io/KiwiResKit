@@ -37,6 +37,7 @@ namespace FFive.Data.Models
         public DbSet<NotificationTemplate> NotificationTemplates { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<Calendar> Calendar { get; set; }
+        public DbSet<ResourceSpResult> ResourceSpResult { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -99,7 +100,7 @@ namespace FFive.Data.Models
                 {
                     ((BaseModel)entry.Entity).CreatedAt = DateTime.UtcNow;
                 }
-            ((BaseModel)entry.Entity).UpdatedAt = DateTime.UtcNow;
+                ((BaseModel)entry.Entity).UpdatedAt = DateTime.UtcNow;
             }
         }
     }

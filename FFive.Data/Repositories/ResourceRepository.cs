@@ -122,18 +122,14 @@ namespace FFive.Data.Repositories
             return users;
         }
 
-        public PagedList<Resource> GetMyResources(Guid managerId, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null)
+        public PagedList<ResourceDto> GetMyResources(Guid? managerId, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null)
         {
             var resources = _appDbContext.Resources.AsQueryable();
 
-            List<Guid> subordinates = new List<Guid>(GetSubordinates(resources, managerId));
-            for (int i = 0; i < subordinates.Count; i++)
-            {
-                subordinates.AddRange(GetSubordinates(resources, subordinates[i]).Except(subordinates));
-            }
-
             if (pagingParams == null)
                 pagingParams = new PagingParams();
+
+            var spResult = _appDbContext.ResourceSpResult.FromSql($"CALL getresourceallocations({managerId}, 1, '2018-11-01','2018-12-31', null,null,null,{pagingParams.PageNumber})").ToList();
 
             var query = _appDbContext.Resources
                 .Include(a => a.Manager)
@@ -143,7 +139,6 @@ namespace FFive.Data.Repositories
                     .ThenInclude(a => a.AllocationType)
                 .Include(a => a.ProjectResources)
                     .ThenInclude(a => a.Project)
-                .Where(a => subordinates.Contains(a.Id))
                     .AsQueryable();
 
             if (orderByExpression != null)
@@ -152,7 +147,38 @@ namespace FFive.Data.Repositories
             if (whereExpression != null)
                 query = query.Where(whereExpression);
 
-            return new PagedList<Resource>(query, pagingParams.PageNumber, pagingParams.PageSize);
+            var result = (from t in spResult
+                          join p in query on t.ResourceId equals p.Id
+                          select new ResourceDto
+                          {
+                              ResourceId = p.Id,
+                              EmpCode = p.EmpCode,
+                              Name = p.FirstName + ' ' + p.LastName,
+                              Designation = p.Designation,
+                              Skill = p.Skillset.Name,
+                              ReportingManagerId = p.Manager == null ? null : p.ManagerId,
+                              ReportingManager = p.Manager == null ? null : (p.Manager.FirstName + ' ' + p.Manager.LastName),
+                              ResourceOwner = p.ResourceOwner == null ? null : (p.ResourceOwner.FirstName + ' ' + p.ResourceOwner.LastName),
+                              ResourceOwnerId = null,
+                              AvailableFullDays = t.Available100Days,
+                              TotalAllocationPerc = Convert.ToInt32(t.TotalAllocationPerc),
+                              TotalDays = t.TotalDays,
+                              AllocatedProjects = p.ProjectResources.Select(q => new AllocatedProject
+                              {
+                                  ProjectResourceId = q.Id,
+                                  ProjectName = q.Project.Name,
+                                  ProjectId = q.ProjectId,
+                                  AllocationType = q.AllocationType.Name,
+                                  AllocationPercentage = q.AllocationPercent,
+                                  EndDate = q.AllocationEndDate,
+                                  StartDate = q.AllocationStartDate,
+                                  AllocationTypeId = q.AllocationTypeId,
+                                  ProjectLocationBillingRoleId = q.ProjectLocationBillingRoleId
+                              }).ToList()
+                          }).ToList();
+
+            PagedList<ResourceDto> resourceDto = new PagedList<ResourceDto>(result, 0, pagingParams.PageNumber, 10);
+            return resourceDto;
         }
 
         private IEnumerable<Guid> GetSubordinates(IEnumerable<Resource> resources, Guid resourceId)

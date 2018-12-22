@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -43,45 +42,15 @@ namespace FFive.API.v1.Controllers
         public ActionResult<PagedList<ResourceDto>> Get([FromQuery]int page = 1, string name = null)
         {
             Expression<Func<Resource, bool>> where = null;
-            //if (name != null)
-            where = (c) => c.FirstName.Contains("kan") || c.LastName.Contains(name);
+            if (name != null)
+                where = (c) => c.FirstName.Contains(name) || c.LastName.Contains(name);
 
             Expression<Func<Resource, string>> orderBy = (c) => c.Id.ToString();
 
-            var resources = _resourceService.GetAllAsync(new PagingParams { PageNumber = page }, where, orderBy);
+            var resources = _resourceService.GetMyResources(null, new PagingParams { PageNumber = page }, where, orderBy);
 
-            if (resources == null)
-                return NotFound();
-
-            var finalResources = resources.Data.Select(p => new ResourceDto
-            {
-                ResourceId = p.Id,
-                EmpCode = p.EmpCode,
-                Name = p.FirstName + ' ' + p.LastName,
-                Designation = p.Designation,
-                Skill = p.Skillset.Name,
-                ReportingManagerId = p.Manager == null ? null : p.ManagerId,
-                ReportingManager = p.Manager == null ? null : (p.Manager.FirstName + ' ' + p.Manager.LastName),
-                ResourceOwner = p.ResourceOwner == null ? null : (p.ResourceOwner.FirstName + ' ' + p.ResourceOwner.LastName),
-                ResourceOwnerId = null,
-                AllocatedProjects = p.ProjectResources.Select(q => new AllocatedProject
-                {
-                    ProjectResourceId = q.Id,
-                    ProjectName = q.Project.Name,
-                    ProjectId = q.ProjectId,
-                    AllocationType = q.AllocationType.Name,
-                    AllocationPercentage = q.AllocationPercent,
-                    EndDate = q.AllocationEndDate,
-                    StartDate = q.AllocationStartDate,
-                    AllocationTypeId = q.AllocationTypeId,
-                    ProjectLocationBillingRoleId = q.ProjectLocationBillingRoleId
-                }).ToList()
-            }).ToList();
-
-            PagedList<ResourceDto> resourceDto = new PagedList<ResourceDto>(finalResources, resources.TotalItems, resources.PageNumber, resources.PageSize);
-
-            if (resourceDto != null)
-                return resourceDto;
+            if (resources != null)
+                return resources;
 
             return NotFound();
         }
@@ -106,40 +75,8 @@ namespace FFive.API.v1.Controllers
 
             var resources = _resourceService.GetMyResources(user.ResourceId, new PagingParams { PageNumber = page }, where, orderBy);
 
-            if (resources == null)
-                return NotFound();
-
-            var finalResources = resources.Data.Select(p => new ResourceDto
-            {
-                ResourceId = p.Id,
-                EmpCode = p.EmpCode,
-                Name = p.FirstName + ' ' + p.LastName,
-                Designation = p.Designation,
-                Skill = p.Skillset.Name,
-                ReportingManagerId = p.Manager == null ? null : p.ManagerId,
-                ReportingManager = p.Manager == null ? null : (p.Manager.FirstName + ' ' + p.Manager.LastName),
-                ResourceOwner = p.ResourceOwner == null ? null : (p.ResourceOwner.FirstName + ' ' + p.ResourceOwner.LastName),
-                ResourceOwnerId = null,
-                AllocatedProjects = p.ProjectResources.Select(q => new AllocatedProject
-                {
-                    ProjectResourceId = q.Id,
-                    ProjectName = q.Project.Name,
-                    ProjectId = q.ProjectId,
-                    AllocationType = q.AllocationType.Name,
-                    AllocationPercentage = q.AllocationPercent,
-                    EndDate = q.AllocationEndDate,
-                    StartDate = q.AllocationStartDate,
-                    AllocationTypeId = q.AllocationTypeId,
-                    StartDateFilter = dateFrom,
-                    EndDateFilter = dateTo,
-                    ProjectLocationBillingRoleId = q.ProjectLocationBillingRoleId
-                }).ToList()
-            }).ToList();
-
-            PagedList<ResourceDto> resourceDto = new PagedList<ResourceDto>(finalResources, resources.TotalItems, resources.PageNumber, resources.PageSize);
-
-            if (resourceDto != null)
-                return resourceDto;
+            if (resources != null)
+                return resources;
 
             return NotFound();
         }

@@ -3,14 +3,16 @@ using System;
 using FFive.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FFive.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181222205211_NewDto")]
+    partial class NewDto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -570,13 +572,13 @@ namespace FFive.Data.Migrations
 
                     b.Property<string>("Skillset");
 
-                    b.Property<decimal>("TotalAllocationPerc");
+                    b.Property<double>("TotalAllocPercent");
 
                     b.Property<int>("TotalDays");
 
                     b.HasKey("ResourceId");
 
-                    b.ToTable("ResourceSpResult");
+                    b.ToTable("resourceDtos");
                 });
 
             modelBuilder.Entity("FFive.Data.Models.Skillset", b =>

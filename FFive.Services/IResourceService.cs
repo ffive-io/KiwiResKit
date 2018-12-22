@@ -22,7 +22,7 @@ namespace FFive.Services
 
         Task<List<SimpleObject>> GetAllUsers();
 
-        PagedList<Resource> GetMyResources(Guid managerId, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null);
+        PagedList<ResourceDto> GetMyResources(Guid? managerId, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null);
 
         PagedList<Resource> GetAllByRoleNameAsync(string roleName, PagingParams pagingParams = null, Expression<Func<Resource, bool>> whereExpression = null, Expression<Func<Resource, string>> orderByExpression = null);
     }

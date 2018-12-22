@@ -39,15 +39,16 @@ class ListResource extends Component {
             .then(res => {
                 let resourcesExisting = this.state.resources;
                 const { dispatch } = this.props;
-                if (res.hasNextPage == true) {
-                    this.setState({ noOfResources: res.totalItems, hasNextPage: true, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
-                } else {
-                    this.setState({ noOfResources: res.totalItems, hasNextPage: false, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
-                }
+                var hNext = res.data.length == 10 ? true : false;
+                this.setState({ noOfResources: res.totalItems, hasNextPage: hNext, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
             },
                 error => {
                     const { dispatch } = this.props;
                     dispatch(alertActions.error('Resource listing failed!'));
+                    this.setState({
+                        hasNextPage: false
+                    });
+
                     setTimeout(function () {
                         dispatch(alertActions.clear());
                     }, 3000);
@@ -59,11 +60,8 @@ class ListResource extends Component {
             .then(res => {
                 let resourcesExisting = this.state.resources;
                 const { dispatch } = this.props;
-                if (res.hasNextPage == true) {
-                    this.setState({ noOfResources: res.totalItems, hasNextPage: true, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
-                } else {
-                    this.setState({ noOfResources: res.totalItems, hasNextPage: false, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
-                }
+                var hNext = res.data.length == 10 ? true : false;
+                this.setState({ noOfResources: res.totalItems, hasNextPage: hNext, pageNumber: res.pageNumber, resources: [...resourcesExisting, ...res.data], loading: false });
             },
                 error => {
                     const { dispatch } = this.props;
@@ -391,6 +389,7 @@ class ListResource extends Component {
                             <TableBody>
                                 {resources.map(resource =>
                                     <tr key={resource.resourceId}>
+                                        {console.log(resource.resourceId)}
                                         <td><a href={'/resources/' + resource.resourceId}>{resource.name}</a></td>
                                         <td>{resource.designation}</td>
 
