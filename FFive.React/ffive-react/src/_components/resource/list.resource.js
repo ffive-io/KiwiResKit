@@ -1,10 +1,10 @@
 ﻿import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { resourceService, projectService, allocationTypeService, projectResourceService } from '../../_services';
+import { skillsetService, resourceService, projectService, allocationTypeService, projectResourceService } from '../../_services';
 import { history } from '../../_helpers';
 import { resourceActions, alertActions } from '../../_actions';
 import SearchBox from './../shared/search-box';
-import { MDBCard, MDBCardHeader, MDBCardBody, Badge, Table, TableBody, TableHead, MDBBtn, MDBIcon, MDBCol, MDBRow, Modal, ModalHeader, ModalBody, ModalFooter, Input, Button } from "mdbreact";
+import { MDBCard, MDBCardHeader, MDBCardBody, Badge, Table, TableBody, TableHead, MDBBtn, MDBIcon, MDBCol, MDBRow, Modal, ModalHeader, ModalBody, ModalFooter, Input, Button, FormInline, Fa } from "mdbreact";
 import momentPropTypes from 'react-moment-proptypes';
 import moment from 'moment';
 import 'react-dates/initialize';
@@ -17,25 +17,28 @@ class ListResource extends Component {
         super(props);
 
         this.state = {
-            billingRoles: [], allocationTypes: [], projects: [], resources: [], loading: true, pageNumber: 1, hasNextPage: true, noOfResources: 0,
+            skillsets: [], availabilities: [], designations: [], billingRoles: [], allocationTypes: [], projects: [], resources: [], loading: true, pageNumber: 1, hasNextPage: true, noOfResources: 0,
             allocationEndDate: moment().add(1, 'months'), allocationStartDate: moment(), focusedAsd: false, focusedAed: false, projectId: '', projectSelectionDisabled: false,
-            tabSelected: 'My', formAction: '', deleteAllocationId: ''
+            tabSelected: 'My', formAction: '', deleteAllocationId: '',
+            startDate: moment().startOf('month'), endDate: moment().endOf('month'), skillset: null, name: null,
+            designation: null, availability: 'Any'
         };
-        this.loadMyResources(1);
+
+        this.loadMyResources(moment().startOf('month'), moment().endOf('month'), 'Any');
     }
 
     toggleTab = (tab) => {
         if (tab === 'My') {
             this.setState({ tabSelected: 'My', resources: [] })
-            this.loadMyResources(1);
+            this.loadMyResources(this.state.startDate, this.state.endDate, this.state.availability, this.state.resourceName, this.state.designation, this.state.skillset, 1);
         } else {
             this.setState({ tabSelected: 'All', resources: [] });
-            this.loadResources(1);
+            this.loadResources(this.state.startDate, this.state.endDate, this.state.availability, this.state.resourceName, this.state.designation, this.state.skillset, 1);
         }
     }
 
-    loadMyResources(pageNumber) {
-        resourceService.getMyResources(pageNumber)
+    loadMyResources(startDate, endDate, allocType, name, designation, skillsetId, pageNumber) {
+        resourceService.getMyResources(startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'), allocType, name, designation, skillsetId, pageNumber)
             .then(res => {
                 let resourcesExisting = this.state.resources;
                 const { dispatch } = this.props;
@@ -55,8 +58,8 @@ class ListResource extends Component {
                 });
     }
 
-    loadResources(pageNumber) {
-        resourceService.getAll(pageNumber)
+    loadResources(startDate, endDate, allocType, name, designation, skillsetId, pageNumber) {
+        resourceService.getAll(startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'), allocType, name, designation, skillsetId, pageNumber)
             .then(res => {
                 let resourcesExisting = this.state.resources;
                 const { dispatch } = this.props;
@@ -78,9 +81,9 @@ class ListResource extends Component {
 
     loadMore = (pageNumber) => {
         if (this.state.tabSelected === 'My') {
-            this.loadMyResources(pageNumber);
+            this.loadMyResources(this.state.startDate, this.state.endDate, this.state.availability, this.state.resourceName, this.state.designation, this.state.skillset, pageNumber);
         } else {
-            this.loadResources(pageNumber);
+            this.loadResources(this.state.startDate, this.state.endDate, this.state.availability, this.state.resourceName, this.state.designation, this.state.skillset, pageNumber);
         }
     }
 
@@ -106,6 +109,23 @@ class ListResource extends Component {
                     allocationTypes: [{ id: '', name: 'Please Select' }]
                 });
             });
+
+        skillsetService.getAll(1)
+            .then(res => {
+                this.setState({
+                    skillsets: [{ id: '', name: 'Please Select' }, ...res.data]
+                });
+            }, error => {
+                this.setState({
+                    skillsets: [{ id: '', name: 'Please Select' }]
+                });
+            });
+
+        let availability = [{ id: 'Any', name: 'Any' }, { id: 'FullAvailable', name: 'Full Available' }, { id: 'PartialAvailable', name: 'Partial Available' }, { id: 'NotAvailable', name: 'Not Available' }];
+        this.setState({
+            availabilities: availability
+        });
+
     }
 
     loadBillingRole = (projectId, callback) => {
@@ -218,6 +238,24 @@ class ListResource extends Component {
         });
     }
 
+
+    searchResource = (e) => {
+        console.log(this.state.availability);
+        e.preventDefault();
+        e.target.className += ' was-validated';
+
+        this.setState({ resources: [] });
+
+        if (this.state.tabSelected === 'My') {
+            this.loadMyResources(this.state.startDate, this.state.endDate, this.state.availability, this.state.resourceName, this.state.designation, this.state.skillset, 1);
+        } else {
+            this.loadResources(this.state.startDate, this.state.endDate, this.state.availability, this.state.resourceName, this.state.designation, this.state.skillset, 1);
+        }
+
+
+    }
+
+
     assignResource = (e) => {
         console.log('here2');
         e.preventDefault();
@@ -299,6 +337,7 @@ class ListResource extends Component {
         if (e.target.type == 'checkbox') {
             this.setState({ [e.target.name]: e.target.checked });
         } else {
+            console.log(e.target.value);
             this.setState({ [e.target.name]: e.target.value });
         }
 
@@ -348,13 +387,79 @@ class ListResource extends Component {
     renderResources(resources) {
         return (
             <Fragment>
+                <form id="searchResource" className='needs-validation' onSubmit={this.searchResource} noValidate>
+                    <MDBRow>
+                        <MDBCol md="2">
+                            <label htmlFor="resourceName" className="form-control-sm">Name:</label>
+                            <input onChange={this.handleChange} name="resourceName" id="resourceName"
+                                className="form-control form-control-sm" placeholder="Name" />
+                        </MDBCol>
+                        <MDBCol md="2">
+                            <label htmlFor="skillset" className="form-control-sm">Skillset:</label>
+                            <select className="form-control form-control-sm"
+                                onChange={this.handleChange}
+                                name="skillset" id="skillset">
+                                {this.state.skillsets.map((skillset) => <option key={skillset.id} value={skillset.id}>{skillset.name}</option>)}
+                            </select>
+                        </MDBCol>
+                        <MDBCol md="2">
+                            <label htmlFor="designation" className="form-control-sm">Designation:</label>
+                            <input onChange={this.handleChange} name="designation" id="designation"
+                                className="form-control form-control-sm" placeholder="Designation" />
+                        </MDBCol>
+                        <MDBCol md="6">
+                            <MDBRow>
+                                <MDBCol md="8">
+                                    <label htmlFor="availability" className="form-control-sm">Availability:</label>
 
-                <MDBRow between>
-                    <MDBCol md="6"><SearchBox /></MDBCol>
-                    <MDBCol md="2">
-                    </MDBCol>
-                </MDBRow>
+                                    <select className="form-control form-control-sm"
+                                        onChange={this.handleChange}
+                                        name="availability" id="availability">
+                                        {this.state.availabilities.map((availability) => <option key={availability.id} value={availability.id}>{availability.name}</option>)}
+                                    </select>
+                                    <div className="invalid-feedback">Please provide availability.</div>
+                                </MDBCol>
+                                <MDBCol md="4">
+                                    <MDBBtn type="submit" color="primary" size="sm">Search</MDBBtn>
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol md="6">
+                                    <label htmlFor="startDate" className="form-control-sm">Start Date</label><br />
+                                    <SingleDatePicker id="startDate"
+                                        placeholder='Select a date'
+                                        showClearDate={true}
+                                        showDefaultInputIcon={true}
+                                        isOutsideRange={() => false}
+                                        small={true}
+                                        date={this.state.startDate}
+                                        focused={this.state.focusedSd}
+                                        numberOfMonths={1}
+                                        onDateChange={date => this.setState({ startDate: date })}
+                                        onFocusChange={({ focused }) => this.setState({ focusedSd: focused })}
+                                    />
 
+                                </MDBCol>
+                                <MDBCol md="6">
+                                    <label htmlFor="endDate" className="form-control-sm">End Date</label><br />
+                                    <SingleDatePicker id="endDate"
+                                        placeholder='Select a date'
+                                        showClearDate={true}
+                                        showDefaultInputIcon={true}
+                                        isOutsideRange={() => false}
+                                        small={true}
+                                        date={this.state.endDate}
+                                        focused={this.state.focusedEd}
+                                        numberOfMonths={1}
+                                        onDateChange={date => this.setState({ endDate: date })}
+                                        onFocusChange={({ focused }) => this.setState({ focusedEd: focused })}
+                                    />
+                                </MDBCol>
+
+                            </MDBRow>
+                        </MDBCol>
+                    </MDBRow >
+                </form>
                 <MDBCard narrow>
                     <MDBCardHeader className="view view-cascade gradient-card-header blue-gradient d-flex justify-content-between align-items-center py-2 mx-4 mb-3">
                         <div>

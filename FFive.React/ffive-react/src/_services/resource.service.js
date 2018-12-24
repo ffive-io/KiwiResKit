@@ -14,20 +14,54 @@ export const resourceService = {
     delete: _delete
 };
 
-function getMyResources(pageNumber) {
+function getMyResources(startDate, endDate, allocType, name, designation, skillsetId, pageNumber) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
-    return fetch(config.apiUrl + '/api/v1/resources/bymanager?page=' + pageNumber, requestOptions).then(handleResponse, handleError);
+    var params = '?startDate=' + startDate + '&endDate=' + endDate +
+        '&allocType=' + allocType;
+    if (name) {
+        params = params + '&name=' + name;
+    }
+
+    if (designation) {
+        params = params + '&designation=' + designation;
+    }
+
+    if (skillsetId) {
+        params = params + '&skillsetId=' + skillsetId;
+    }
+    if (pageNumber) {
+        params = params + '&page=' + pageNumber;
+    }
+
+    return fetch(config.apiUrl + '/api/v1/resources/bymanager' + params, requestOptions).then(handleResponse, handleError);
 }
 
-function getAll(pageNumber) {
+function getAll(startDate, endDate, allocType, name, designation, skillsetId, pageNumber) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
-    return fetch(config.apiUrl + '/api/v1/resources?page=' + pageNumber, requestOptions).then(handleResponse, handleError);
+    var params = '?startDate=' + startDate + '&endDate=' + endDate +
+        '&allocType=' + allocType;
+    if (name) {
+        params = params + '&name=' + name;
+    }
+
+    if (designation) {
+        params = params + '&designation=' + designation;
+    }
+
+    if (skillsetId) {
+        params = params + '&skillsetId=' + skillsetId;
+    }
+    if (pageNumber) {
+        params = params + '&page=' + pageNumber;
+    }
+
+    return fetch(config.apiUrl + '/api/v1/resources' + params, requestOptions).then(handleResponse, handleError);
 }
 
 function getAllNames() {
