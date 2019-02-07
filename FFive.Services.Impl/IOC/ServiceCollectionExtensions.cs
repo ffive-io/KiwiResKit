@@ -13,6 +13,7 @@ namespace FFive.Services.Impl.IOC
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped(typeof(IGenericService<,>), typeof(GenericService<,>));
             services.AddScoped<IGenericService<ProjectResource, string>, ProjectResourceService>();
+            services.AddScoped<ICacheService, RedisCacheService>();
             return services;
         }
     }
