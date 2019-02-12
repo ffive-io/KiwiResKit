@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFive.Services.Impl", "FFiv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFive.React", "FFive.React\FFive.React.csproj", "{78430881-BA71-47A5-9991-477A97B6CC96}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFive.Angular", "FFive.Angular\FFive.Angular.csproj", "{F22C7AD3-620D-4458-A37E-6C5565D98C64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{78430881-BA71-47A5-9991-477A97B6CC96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78430881-BA71-47A5-9991-477A97B6CC96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78430881-BA71-47A5-9991-477A97B6CC96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F22C7AD3-620D-4458-A37E-6C5565D98C64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F22C7AD3-620D-4458-A37E-6C5565D98C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F22C7AD3-620D-4458-A37E-6C5565D98C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F22C7AD3-620D-4458-A37E-6C5565D98C64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
